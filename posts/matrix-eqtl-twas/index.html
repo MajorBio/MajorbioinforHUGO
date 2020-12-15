@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>TWAS/eQTL analysis pipeline - 美吉生物信息团队</title><meta name="Description" content="根据基因的表达量进行eQTL分析"><meta property="og:title" content="TWAS/eQTL analysis pipeline" />
+<meta property="og:description" content="根据基因的表达量进行eQTL分析" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://czheluo.github.io/MajorbioHuGo/posts/matrix-eqtl-twas/" />
+<meta property="og:image" content="http://czheluo.github.io/MajorbioHuGo/posts/matrix-eqtl-twas/eQTL.png"/>
+<meta property="article:published_time" content="2020-12-14T16:29:59+08:00" />
+<meta property="article:modified_time" content="2020-12-18T16:29:59+08:00" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="http://czheluo.github.io/MajorbioHuGo/posts/matrix-eqtl-twas/eQTL.png"/>
+<meta name="twitter:title" content="TWAS/eQTL analysis pipeline"/>
+<meta name="twitter:description" content="根据基因的表达量进行eQTL分析"/>
+<meta name="application-name" content="美吉生物信息团队">
+<meta name="apple-mobile-web-app-title" content="美吉生物信息团队"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://czheluo.github.io/MajorbioHuGo/posts/matrix-eqtl-twas/" /><link rel="prev" href="http://czheluo.github.io/MajorbioHuGo/posts/probabilistic-estimation-of-expression-residuals/" /><link rel="next" href="http://czheluo.github.io/MajorbioHuGo/posts/stem-sop/" /><link rel="stylesheet" href="/MajorbioHuGo/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/MajorbioHuGo/css/style.min.css"><link rel="stylesheet" href="/MajorbioHuGo/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/MajorbioHuGo/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "TWAS/eQTL analysis pipeline",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/czheluo.github.io\/MajorbioHuGo\/posts\/matrix-eqtl-twas\/"
+        },"image": [{
+                            "@type": "ImageObject",
+                            "url": "http:\/\/czheluo.github.io\/MajorbioHuGo\/posts\/matrix-eqtl-twas\/eQTL.png",
+                            "width":  1420 ,
+                            "height":  588 
+                        }],"genre": "posts","keywords": "eQTL, TWAS, RNAseq, 表达量, 定位","wordcount":  1333 ,
+        "url": "http:\/\/czheluo.github.io\/MajorbioHuGo\/posts\/matrix-eqtl-twas\/","datePublished": "2020-12-14T16:29:59+08:00","dateModified": "2020-12-18T16:29:59+08:00","publisher": {
+            "@type": "Organization",
+            "name": "Xiaolong He"},"author": {
+                "@type": "Person",
+                "name": "Xiaolong He"
+            },"description": "根据基因的表达量进行eQTL分析"
+    }
+    </script></head>
+    <body header-desktop="" header-mobile=""><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : '' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/MajorbioHuGo/" title="美吉生物信息团队">美吉生物信息团队</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/MajorbioHuGo/MajorbioHuGo/posts/"> 所有文章 </a><a class="menu-item" href="/MajorbioHuGo/MajorbioHuGo/tags/"> 标签 </a><a class="menu-item" href="/MajorbioHuGo/MajorbioHuGo/categories/"> 分类 </a><a class="menu-item" href="/MajorbioHuGo/MajorbioHuGo/categories/documentation/"> 文档 </a><a class="menu-item" href="/MajorbioHuGo/MajorbioHuGo/about/"> 关于 </a><a class="menu-item" href="/MajorbioHuGo" title="GitHub"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/MajorbioHuGo/" title="美吉生物信息团队">美吉生物信息团队</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/MajorbioHuGo/MajorbioHuGo/posts/" title="">所有文章</a><a class="menu-item" href="/MajorbioHuGo/MajorbioHuGo/tags/" title="">标签</a><a class="menu-item" href="/MajorbioHuGo/MajorbioHuGo/categories/" title="">分类</a><a class="menu-item" href="/MajorbioHuGo/MajorbioHuGo/categories/documentation/" title="">文档</a><a class="menu-item" href="/MajorbioHuGo/MajorbioHuGo/about/" title="">关于</a><a class="menu-item" href="/MajorbioHuGo" title="GitHub"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">TWAS/eQTL analysis pipeline</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/xiaolong-he999" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw"></i>Xiaolong He</a></span>&nbsp;<span class="post-category">收录于 <a href="/MajorbioHuGo/categories/rnaseq/"><i class="far fa-folder fa-fw"></i>RNAseq</a>&nbsp;<a href="/MajorbioHuGo/categories/pipeline/"><i class="far fa-folder fa-fw"></i>Pipeline</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-12-14">2020-12-14</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 1333 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 3 分钟&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/MajorbioHuGo/svg/loading.min.svg"
+        data-src="/MajorbioHuGo/posts/matrix-eqtl-twas/eQTL.png"
+        data-srcset="/MajorbioHuGo/posts/matrix-eqtl-twas/eQTL.png, /MajorbioHuGo/posts/matrix-eqtl-twas/eQTL.png 1.5x, /MajorbioHuGo/posts/matrix-eqtl-twas/eQTL.png 2x"
+        data-sizes="auto"
+        alt="/MajorbioHuGo/posts/matrix-eqtl-twas/eQTL.png"
+        title="根据基因的表达量进行eQTL分析" /></div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#数据准备">数据准备</a></li>
+    <li><a href="#pipeline">Pipeline</a></li>
+    <li><a href="#setp1-data-prepare">setp1 data prepare</a>
+      <ul>
+        <li><a href="#结果展示">结果展示：</a></li>
+      </ul>
+    </li>
+    <li><a href="#step2-data-prepare">step2 data prepare</a>
+      <ul>
+        <li><a href="#结果展示-1">结果展示：</a></li>
+      </ul>
+    </li>
+    <li><a href="#step3-calculate-eqtl-matrix">step3 calculate eQTL matrix</a>
+      <ul>
+        <li><a href="#结果展示-2">结果展示：</a></li>
+      </ul>
+    </li>
+    <li><a href="#参考文献">参考文献</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="eqtl">eQTL</h1>
+<h2 id="数据准备">数据准备</h2>
+<ol>
+<li>物种的gff文件</li>
+<li>vcf文件（已做完基因型填充）</li>
+</ol>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nv">$java</span> -jar /mnt/ilustre/centos7users/xiaolong.he/bin/beagle/beagle.18May20.d20.jar <span class="nv">gt</span><span class="o">=</span>/mnt/ilustre/centos7users/xiaolong.he/others/GWAS_mengluo/KF/pop.uniq.vcf <span class="nv">out</span><span class="o">=</span>/mnt/ilustre/centos7users/xiaolong.he/others/GWAS_mengluo/KF/pop.phased&gt;
+</code></pre></div><ol>
+<li>基因表达量矩阵（行为基因，列为样本）</li>
+</ol>
+<h2 id="pipeline">Pipeline</h2>
+<p>示例：</p>
+<p><img
+        class="lazyload"
+        src="/MajorbioHuGo/svg/loading.min.svg"
+        data-src="Pipleline.png"
+        data-srcset="/MajorbioHuGo/posts/matrix-eqtl-twas/Pipleline.png, Pipleline.png 1.5x, /MajorbioHuGo/posts/matrix-eqtl-twas/Pipleline.png 2x"
+        data-sizes="auto"
+        alt="/MajorbioHuGo/posts/matrix-eqtl-twas/Pipleline.png"
+        title="Pipleline.png" /></p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">python</span> <span class="n">eQTL</span><span class="o">.</span><span class="n">Pipeline</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">e</span> <span class="n">expression</span><span class="o">.</span><span class="n">xls</span> <span class="o">-</span><span class="n">c</span> <span class="n">covariates</span> <span class="o">-</span><span class="n">g</span> <span class="n">ref</span><span class="o">.</span><span class="n">gff</span> <span class="o">-</span><span class="n">p</span> <span class="n">test</span> <span class="o">-</span><span class="n">r</span> <span class="mi">50</span> <span class="o">-</span><span class="n">o</span> <span class="o">./&gt;</span>
+<span class="err">其中</span><span class="sb">`-c`</span><span class="err">参数为可选参数</span>
+<span class="c1">#!/usr/bin/env python</span>
+<span class="c1"># -*-coding:utf-8-*-</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&#34;GWAS.py&#34;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-v&#39;</span><span class="p">,</span> <span class="s1">&#39;--vcf&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;the vcf file&#39;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-e&#39;</span><span class="p">,</span> <span class="s1">&#39;--expression&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;the gene expression metrix&#39;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-c&#39;</span><span class="p">,</span> <span class="s1">&#39;--covariates&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;the covariates file&#39;</span><span class="p">,</span> <span class="n">default</span> <span class="o">=</span> <span class="s1">&#39;None&#39;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-g&#39;</span><span class="p">,</span> <span class="s1">&#39;--gff&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;the gff file&#39;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-p&#39;</span><span class="p">,</span> <span class="s1">&#39;--prefix&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">help</span><span class="o">=</span><span class="s1">&#39;prefix out filename&#39;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-m&#39;</span><span class="p">,</span> <span class="s1">&#39;--model&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;models, such as ANOVA/A, LINEAR/L, LINEAR_CROSS/C&#39;</span><span class="p">,</span> <span class="n">default</span> <span class="o">=</span> <span class="s1">&#39;L&#39;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-r&#39;</span><span class="p">,</span> <span class="s1">&#39;--ram&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;RAM for running&#39;</span><span class="p">,</span> <span class="n">default</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="s1">&#39;--outpath&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;the output path, which end with /&#39;</span><span class="p">)</span>
+<span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">data_prepare</span><span class="p">():</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">outpath</span><span class="p">)</span>
+    <span class="n">vcf</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">vcf</span><span class="p">)</span>
+    <span class="n">gff</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">gff</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s1">&#39;work_sh&#39;</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="s1">&#39;work_sh&#39;</span><span class="p">)</span>
+    <span class="n">scpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&#34;work_sh/eqtl.sh&#34;</span><span class="p">,</span> <span class="s2">&#34;w&#34;</span><span class="p">)</span>
+    <span class="n">step1</span> <span class="o">=</span> <span class="n">scpath</span><span class="o">+</span><span class="s1">&#39;/step01.vcf2num.R&#39;</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="s2">&#34;cd &#34;</span> <span class="o">+</span> <span class="n">out</span> <span class="o">+</span> <span class="s2">&#34; &amp;&amp; &#34;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="s2">&#34;Rscript &#34;</span> <span class="o">+</span> <span class="n">step1</span> <span class="o">+</span> <span class="s2">&#34; -v &#34;</span> <span class="o">+</span> <span class="n">vcf</span> <span class="o">+</span> <span class="s2">&#34; -o &#34;</span> <span class="o">+</span> <span class="n">out</span> <span class="o">+</span> <span class="s2">&#34; -p &#34;</span> <span class="o">+</span> <span class="n">args</span><span class="o">.</span><span class="n">prefix</span> <span class="o">+</span> <span class="s2">&#34; &amp; &#34;</span><span class="p">)</span>
+    <span class="c1"># f2 = open(&#34;work_sh/step02.gff2geneloc.sh&#34;, &#34;w&#34;)</span>
+    <span class="n">step2</span> <span class="o">=</span> <span class="n">scpath</span><span class="o">+</span><span class="s1">&#39;/step02.gff2geneloc.py&#39;</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="s2">&#34;python &#34;</span> <span class="o">+</span> <span class="n">step2</span> <span class="o">+</span> <span class="s2">&#34; -g &#34;</span> <span class="o">+</span> <span class="n">gff</span> <span class="o">+</span> <span class="s2">&#34; -o &#34;</span> <span class="o">+</span> <span class="n">out</span> <span class="o">+</span> <span class="s1">&#39; &amp;&amp; &#39;</span><span class="p">)</span>
+    <span class="c1"># f3 = open(&#34;work_sh/step03.eqtl.sh&#34;, &#34;w&#34;)</span>
+    <span class="n">step3</span> <span class="o">=</span> <span class="n">scpath</span><span class="o">+</span><span class="s1">&#39;/step03.eqtl.R&#39;</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">covariates</span> <span class="o">!=</span> <span class="s2">&#34;None&#34;</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="s2">&#34;export R_LIBS=;export R_HOME=;export RHOME=;/mnt/ilustre/centos7users/dna/.env/R-3.6.1/bin/Rscript &#34;</span><span class="o">+</span> <span class="n">step3</span> \
+                <span class="o">+</span> <span class="s2">&#34; -s &#34;</span> <span class="o">+</span> <span class="n">out</span> <span class="o">+</span> <span class="n">args</span><span class="o">.</span><span class="n">prefix</span> <span class="o">+</span> <span class="s2">&#34;.SNP.txt&#34;</span> <span class="o">+</span> <span class="s2">&#34; -e &#34;</span> <span class="o">+</span> <span class="n">args</span><span class="o">.</span><span class="n">expression</span> <span class="o">+</span> <span class="s2">&#34; -c &#34;</span> <span class="o">+</span> <span class="n">args</span><span class="o">.</span><span class="n">covariates</span> <span class="o">+</span> <span class="s2">&#34; -l &#34;</span> <span class="o">+</span> <span class="n">out</span> <span class="o">+</span> \
+                <span class="n">args</span><span class="o">.</span><span class="n">prefix</span> <span class="o">+</span> <span class="s2">&#34;.snpsloc.txt&#34;</span> <span class="o">+</span> <span class="s2">&#34; -g &#34;</span><span class="o">+</span> <span class="s2">&#34;geneloc.txt&#34;</span> <span class="o">+</span> <span class="s2">&#34; -o &#34;</span> <span class="o">+</span> <span class="n">args</span><span class="o">.</span><span class="n">outpath</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="s2">&#34;export R_LIBS=;export R_HOME=;export RHOME=;/mnt/ilustre/centos7users/dna/.env/R-3.6.1/bin/Rscript &#34;</span> <span class="o">+</span> <span class="n">step3</span> \
+                <span class="o">+</span> <span class="s2">&#34; -s &#34;</span> <span class="o">+</span> <span class="n">out</span> <span class="o">+</span> <span class="n">args</span><span class="o">.</span><span class="n">prefix</span> <span class="o">+</span> <span class="s2">&#34;.SNP.txt&#34;</span> <span class="o">+</span> <span class="s2">&#34; -e &#34;</span> <span class="o">+</span> <span class="n">args</span><span class="o">.</span><span class="n">expression</span> <span class="o">+</span> <span class="s2">&#34; -l &#34;</span> <span class="o">+</span> <span class="n">out</span> <span class="o">+</span> <span class="n">args</span><span class="o">.</span><span class="n">prefix</span> <span class="o">+</span> <span class="s2">&#34;.snpsloc.txt&#34;</span> \
+                <span class="o">+</span> <span class="s2">&#34; -g &#34;</span><span class="o">+</span> <span class="s2">&#34;geneloc.txt&#34;</span> <span class="o">+</span> <span class="s2">&#34; -m &#34;</span> <span class="o">+</span> <span class="n">args</span><span class="o">.</span><span class="n">model</span> <span class="o">+</span> <span class="s2">&#34; -o &#34;</span> <span class="o">+</span> <span class="n">out</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="s2">&#34;work_sh&#34;</span><span class="p">)</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">([</span><span class="s2">&#34;qsub-slurm.pl&#34;</span><span class="p">,</span> <span class="s2">&#34;--Resource&#34;</span><span class="p">,</span> <span class="s2">&#34;mem=&#34;</span><span class="o">+</span><span class="n">args</span><span class="o">.</span><span class="n">ram</span><span class="p">,</span> <span class="s2">&#34;--CPU&#34;</span><span class="p">,</span> <span class="s2">&#34;2&#34;</span><span class="p">,</span> <span class="s2">&#34;eqtl.sh&#34;</span><span class="p">])</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">data_prepare</span><span class="p">()</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Running time: </span><span class="si">%s</span><span class="s1"> Seconds&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">))</span>
+</code></pre></div><h2 id="setp1-data-prepare">setp1 data prepare</h2>
+<p>从vcf文件提取snp位置信息，以及snp基因型矩阵</p>
+<p><img
+        class="lazyload"
+        src="/MajorbioHuGo/svg/loading.min.svg"
+        data-src="step01.vcf2num.png"
+        data-srcset="/MajorbioHuGo/posts/matrix-eqtl-twas/step01.vcf2num.png, step01.vcf2num.png 1.5x, /MajorbioHuGo/posts/matrix-eqtl-twas/step01.vcf2num.png 2x"
+        data-sizes="auto"
+        alt="/MajorbioHuGo/posts/matrix-eqtl-twas/step01.vcf2num.png"
+        title="step01.vcf2num.png" /></p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="c1">#/usr/bin/env Rscript</span>
+<span class="nf">.libPaths</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&#34;/mnt/ilustre/centos7users/meng.luo/.env/lib/R/library/&#34;</span><span class="p">,</span><span class="s">&#34;/mnt/ilustre/centos7users/xiaolong.he/lib/R3.5/&#34;</span><span class="p">))</span>
+
+<span class="nf">library</span><span class="p">(</span><span class="s">&#39;getopt&#39;</span><span class="p">)</span>
+<span class="nf">options</span><span class="p">(</span><span class="n">bitmapType</span><span class="o">=</span><span class="s">&#39;cairo&#39;</span><span class="p">)</span>
+<span class="n">spec</span> <span class="o">=</span> <span class="nf">matrix</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span>
+		<span class="s">&#39;vcf&#39;</span><span class="p">,</span><span class="s">&#39;v&#39;</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="s">&#39;character&#39;</span><span class="p">,</span>
+		<span class="s">&#39;outdir&#39;</span><span class="p">,</span><span class="s">&#39;o&#39;</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="s">&#39;character&#39;</span><span class="p">,</span>
+		<span class="s">&#39;prefix&#39;</span><span class="p">,</span><span class="s">&#39;p&#39;</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="s">&#39;character&#39;</span><span class="p">,</span>
+		<span class="s">&#39;help&#39;</span><span class="p">,</span><span class="s">&#39;h&#39;</span><span class="p">,</span><span class="m">0</span><span class="p">,</span><span class="s">&#39;logical&#39;</span>
+		<span class="p">),</span><span class="n">byrow</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="m">4</span><span class="p">);</span>
+<span class="n">opt</span> <span class="o">=</span> <span class="nf">getopt</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
+<span class="n">print_usage</span> <span class="o">&lt;-</span> <span class="nf">function</span><span class="p">(</span><span class="n">spec</span><span class="o">=</span><span class="kc">NULL</span><span class="p">){</span>
+	<span class="nf">cat</span><span class="p">(</span><span class="nf">getopt</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">usage</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">))</span>
+	<span class="nf">cat</span><span class="p">(</span><span class="s">&#34;Usage example: \n&#34;</span><span class="p">)</span>
+	<span class="nf">cat</span><span class="p">(</span><span class="s">&#34;
+</span><span class="s">Usage example:
+</span><span class="s">	Rscript vcf2num.R
+</span><span class="s">Usage:
+</span><span class="s">	--vcf vcf
+</span><span class="s">	--outdir outdir
+</span><span class="s">	--prefix prefix name for out
+</span><span class="s">	--help usage\n&#34;</span><span class="p">)</span>
+	<span class="nf">q</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="m">1</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="nf">if </span><span class="p">(</span> <span class="o">!</span><span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">help</span><span class="p">))</span> <span class="p">{</span> <span class="nf">print_usage</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span> <span class="p">}</span>
+<span class="nf">if </span><span class="p">(</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">vcf</span><span class="p">))</span> <span class="p">{</span> <span class="nf">print_usage</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span> <span class="p">}</span>
+<span class="nf">if </span><span class="p">(</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">outdir</span><span class="p">))</span> <span class="p">{</span> <span class="nf">print_usage</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span> <span class="p">}</span>
+<span class="nf">if </span><span class="p">(</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">prefix</span><span class="p">))</span> <span class="p">{</span> <span class="nf">print_usage</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span> <span class="p">}</span>
+
+<span class="nf">setwd</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">outdir</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">rMVP</span><span class="p">)</span>
+<span class="nf">MVP.Data.VCF2MVP</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">vcf</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">opt</span><span class="o">$</span><span class="n">prefix</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="m">1</span><span class="p">)</span>
+<span class="n">geno</span> <span class="o">&lt;-</span> <span class="nf">attach.big.matrix</span><span class="p">(</span><span class="nf">paste</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">prefix</span><span class="p">,</span><span class="s">&#34;geno.desc&#34;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s">&#39;.&#39;</span><span class="p">))</span>
+<span class="n">map</span> <span class="o">&lt;-</span> <span class="nf">read.table</span><span class="p">(</span><span class="nf">paste</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">prefix</span><span class="p">,</span><span class="s">&#34;geno.map&#34;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s">&#39;.&#39;</span><span class="p">),</span><span class="n">header</span><span class="o">=</span><span class="bp">T</span><span class="p">,</span><span class="n">stringsAsFactors</span><span class="o">=</span><span class="bp">F</span><span class="p">)</span>
+<span class="n">samples</span> <span class="o">&lt;-</span> <span class="nf">read.table</span><span class="p">(</span><span class="nf">paste</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">prefix</span><span class="p">,</span><span class="s">&#34;geno.ind&#34;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s">&#39;.&#39;</span><span class="p">),</span><span class="n">header</span><span class="o">=</span><span class="bp">F</span><span class="p">,</span><span class="n">stringsAsFactors</span><span class="o">=</span><span class="bp">F</span><span class="p">)</span>
+<span class="n">dat</span> <span class="o">&lt;-</span> <span class="nf">as.data.frame</span><span class="p">(</span><span class="n">geno[</span><span class="p">,</span><span class="n">]</span><span class="p">)</span>
+<span class="c1"># dat[is.na(dat)] &lt;- 0</span>
+<span class="c1"># new_dat &lt;- cbind(map$SNP,dat)</span>
+<span class="n">dat_imu</span> <span class="o">&lt;-</span> <span class="nf">matrix</span><span class="p">(</span><span class="n">nrow</span><span class="o">=</span><span class="nf">dim</span><span class="p">(</span><span class="n">dat</span><span class="p">)</span><span class="n">[1]</span><span class="p">,</span><span class="n">ncol</span><span class="o">=</span><span class="nf">dim</span><span class="p">(</span><span class="n">dat</span><span class="p">)</span><span class="n">[2]</span><span class="p">)</span>
+<span class="nf">for</span><span class="p">(</span><span class="n">i</span> <span class="n">in</span> <span class="m">1</span><span class="o">:</span><span class="nf">dim</span><span class="p">(</span><span class="n">dat</span><span class="p">)</span><span class="n">[1]</span><span class="p">){</span>
+	<span class="n">line</span> <span class="o">&lt;-</span> <span class="nf">as.numeric</span><span class="p">(</span><span class="n">dat[i</span><span class="p">,</span><span class="n">]</span><span class="p">)</span>
+	<span class="n">aver</span> <span class="o">&lt;-</span> <span class="nf">mean</span><span class="p">(</span><span class="n">line</span><span class="p">,</span><span class="n">na.rm</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span>
+	<span class="n">line</span><span class="nf">[is.na</span><span class="p">(</span><span class="n">line</span><span class="p">)</span><span class="n">]</span> <span class="o">&lt;-</span> <span class="n">aver</span>
+	<span class="n">dat_imu[i</span><span class="p">,</span><span class="n">]</span> <span class="o">&lt;-</span> <span class="n">line</span>
+<span class="p">}</span>
+<span class="n">new_dat</span> <span class="o">&lt;-</span> <span class="nf">cbind</span><span class="p">(</span><span class="n">map</span><span class="o">$</span><span class="n">SNP</span><span class="p">,</span><span class="n">dat_imu</span><span class="p">)</span>
+<span class="nf">colnames</span><span class="p">(</span><span class="n">new_dat</span><span class="p">)</span> <span class="o">&lt;-</span> <span class="nf">c</span><span class="p">(</span><span class="s">&#34;snpid&#34;</span><span class="p">,</span><span class="n">samples[</span><span class="p">,</span><span class="m">1</span><span class="n">]</span><span class="p">)</span>
+<span class="nf">write.table</span><span class="p">(</span><span class="n">new_dat</span><span class="p">,</span><span class="nf">paste</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">prefix</span><span class="p">,</span><span class="s">&#39;SNP.txt&#39;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s">&#39;.&#39;</span><span class="p">),</span><span class="n">col.names</span><span class="o">=</span><span class="bp">T</span><span class="p">,</span><span class="n">row.names</span><span class="o">=</span><span class="bp">F</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s">&#39;\t&#39;</span><span class="p">,</span><span class="n">quote</span><span class="o">=</span><span class="bp">F</span><span class="p">)</span>
+<span class="n">snpsloc</span> <span class="o">&lt;-</span> <span class="n">map[</span><span class="p">,</span><span class="m">1</span><span class="o">:</span><span class="m">3</span><span class="n">]</span><span class="p">;</span><span class="nf">names</span><span class="p">(</span><span class="n">snpsloc</span><span class="p">)</span><span class="o">&lt;-</span><span class="nf">c</span><span class="p">(</span><span class="s">&#34;snpid&#34;</span><span class="p">,</span><span class="s">&#34;chr&#34;</span><span class="p">,</span><span class="s">&#34;pos&#34;</span><span class="p">)</span>
+<span class="nf">write.table</span><span class="p">(</span><span class="n">snpsloc</span><span class="p">,</span><span class="nf">paste</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">prefix</span><span class="p">,</span><span class="s">&#39;snpsloc.txt&#39;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s">&#39;.&#39;</span><span class="p">),</span><span class="n">col.names</span><span class="o">=</span><span class="bp">T</span><span class="p">,</span><span class="n">row.names</span><span class="o">=</span><span class="bp">F</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s">&#39;\t&#39;</span><span class="p">,</span><span class="n">quote</span><span class="o">=</span><span class="bp">F</span><span class="p">)</span>
+<span class="nf">save.image</span><span class="p">(</span><span class="nf">paste</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">prefix</span><span class="p">,</span><span class="s">&#34;RData&#34;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s">&#34;.&#34;</span><span class="p">))</span>
+<span class="nf">print</span><span class="p">(</span><span class="s">&#34;This-work-has-been-completed!&#34;</span><span class="p">)</span>
+<span class="nf">proc.time</span><span class="p">()</span>
+</code></pre></div><h3 id="结果展示">结果展示：</h3>
+<p><img
+        class="lazyload"
+        src="/MajorbioHuGo/svg/loading.min.svg"
+        data-src="step01.result.png"
+        data-srcset="/MajorbioHuGo/posts/matrix-eqtl-twas/step01.result.png, step01.result.png 1.5x, /MajorbioHuGo/posts/matrix-eqtl-twas/step01.result.png 2x"
+        data-sizes="auto"
+        alt="/MajorbioHuGo/posts/matrix-eqtl-twas/step01.result.png"
+        title="step01.result.png" /></p>
+<p><img
+        class="lazyload"
+        src="/MajorbioHuGo/svg/loading.min.svg"
+        data-src="step01.result-details.png"
+        data-srcset="/MajorbioHuGo/posts/matrix-eqtl-twas/step01.result-details.png, step01.result-details.png 1.5x, /MajorbioHuGo/posts/matrix-eqtl-twas/step01.result-details.png 2x"
+        data-sizes="auto"
+        alt="/MajorbioHuGo/posts/matrix-eqtl-twas/step01.result-details.png"
+        title="step01.result-details.png" /></p>
+<h2 id="step2-data-prepare">step2 data prepare</h2>
+<p>从gff文件提取gene位置信息</p>
+<p><img
+        class="lazyload"
+        src="/MajorbioHuGo/svg/loading.min.svg"
+        data-src="step02.gff2geneloc.png"
+        data-srcset="/MajorbioHuGo/posts/matrix-eqtl-twas/step02.gff2geneloc.png, step02.gff2geneloc.png 1.5x, /MajorbioHuGo/posts/matrix-eqtl-twas/step02.gff2geneloc.png 2x"
+        data-sizes="auto"
+        alt="/MajorbioHuGo/posts/matrix-eqtl-twas/step02.gff2geneloc.png"
+        title="step02.gff2geneloc.png" /></p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*-coding:utf-8-*-</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+
+<span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&#34;GWAS.py&#34;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-g&#39;</span><span class="p">,</span> <span class="s1">&#39;--gff&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;the gff file&#39;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="s1">&#39;--outpath&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;the output path, which end with /&#39;</span><span class="p">)</span>
+<span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">gff2geneloc</span><span class="p">():</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">gff</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+    <span class="n">fo</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">outpath</span> <span class="o">+</span> <span class="s2">&#34;geneloc.txt&#34;</span><span class="p">,</span> <span class="s2">&#34;w&#34;</span><span class="p">)</span>
+    <span class="n">fo</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="s2">&#34;geneid</span><span class="se">\t</span><span class="s2">chr</span><span class="se">\t</span><span class="s2">left</span><span class="se">\t</span><span class="s2">right</span><span class="se">\n</span><span class="s2">&#34;</span><span class="p">)</span>
+    <span class="n">geneloc</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">genes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">Chr</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> 
+        <span class="n">loc1</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">loc2</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">4</span><span class="p">]</span>
+        <span class="n">geneid</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">8</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">loc1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">int</span><span class="p">(</span><span class="n">loc2</span><span class="p">):</span>
+            <span class="n">left</span> <span class="o">=</span> <span class="n">loc1</span>
+            <span class="n">right</span> <span class="o">=</span> <span class="n">loc2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">left</span> <span class="o">=</span> <span class="n">loc2</span>
+            <span class="n">right</span> <span class="o">=</span> <span class="n">loc1</span>
+        <span class="k">if</span> <span class="n">geneid</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">genes</span><span class="p">:</span>
+            <span class="n">genes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">geneid</span><span class="p">)</span>
+            <span class="n">geneloc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">geneid</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">Chr</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">left</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">right</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">fo</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">geneloc</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">fo</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">gff2geneloc</span><span class="p">()</span>
+</code></pre></div><h3 id="结果展示-1">结果展示：</h3>
+<p><img
+        class="lazyload"
+        src="/MajorbioHuGo/svg/loading.min.svg"
+        data-src="step02.result-details.png"
+        data-srcset="/MajorbioHuGo/posts/matrix-eqtl-twas/step02.result-details.png, step02.result-details.png 1.5x, /MajorbioHuGo/posts/matrix-eqtl-twas/step02.result-details.png 2x"
+        data-sizes="auto"
+        alt="/MajorbioHuGo/posts/matrix-eqtl-twas/step02.result-details.png"
+        title="step02.result-details.png" /></p>
+<h2 id="step3-calculate-eqtl-matrix">step3 calculate eQTL matrix</h2>
+<p>利用基因表达矩阵、基因位置文件、snp、snp位置文件、协变量矩阵（可选），计算cis、trans作用位点</p>
+<p><img
+        class="lazyload"
+        src="/MajorbioHuGo/svg/loading.min.svg"
+        data-src="step03.eqtl.png"
+        data-srcset="/MajorbioHuGo/posts/matrix-eqtl-twas/step03.eqtl.png, step03.eqtl.png 1.5x, /MajorbioHuGo/posts/matrix-eqtl-twas/step03.eqtl.png 2x"
+        data-sizes="auto"
+        alt="/MajorbioHuGo/posts/matrix-eqtl-twas/step03.eqtl.png"
+        title="step03.eqtl.png" /></p>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="c1">#!/usr/bin/env Rscript3.6</span>
+<span class="nf">.libPaths</span><span class="p">(</span><span class="s">&#34;/mnt/ilustre/centos7users/xiaolong.he/R/x86_64-pc-linux-gnu-library/3.6/&#34;</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="s">&#39;getopt&#39;</span><span class="p">);</span>
+<span class="nf">options</span><span class="p">(</span><span class="n">bitmapType</span><span class="o">=</span><span class="s">&#39;cairo&#39;</span><span class="p">)</span>
+<span class="n">spec</span> <span class="o">=</span> <span class="nf">matrix</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span>
+	<span class="s">&#39;snps&#39;</span><span class="p">,</span><span class="s">&#39;s&#39;</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="s">&#39;character&#39;</span><span class="p">,</span>
+	<span class="s">&#39;expressions&#39;</span><span class="p">,</span><span class="s">&#39;e&#39;</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="s">&#39;character&#39;</span><span class="p">,</span>
+	<span class="s">&#39;covariates&#39;</span><span class="p">,</span><span class="s">&#39;c&#39;</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="s">&#39;character&#39;</span><span class="p">,</span>
+	<span class="s">&#39;snpspos&#39;</span><span class="p">,</span><span class="s">&#39;l&#39;</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span><span class="s">&#39;character&#39;</span><span class="p">,</span>
+	<span class="s">&#39;genespos&#39;</span><span class="p">,</span><span class="s">&#39;g&#39;</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="s">&#39;character&#39;</span><span class="p">,</span>
+	<span class="s">&#39;outdir&#39;</span><span class="p">,</span><span class="s">&#39;o&#39;</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="s">&#39;character&#39;</span><span class="p">,</span>
+	<span class="s">&#39;threshold&#39;</span><span class="p">,</span><span class="s">&#39;t&#39;</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="s">&#39;numeric&#39;</span><span class="p">,</span>
+	<span class="s">&#39;distance&#39;</span><span class="p">,</span><span class="s">&#39;d&#39;</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="s">&#39;numeric&#39;</span><span class="p">,</span>
+	<span class="s">&#39;model&#39;</span><span class="p">,</span><span class="s">&#39;m&#39;</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="s">&#39;character&#39;</span><span class="p">,</span>
+	<span class="s">&#39;help&#39;</span><span class="p">,</span><span class="s">&#39;h&#39;</span><span class="p">,</span><span class="m">0</span><span class="p">,</span><span class="s">&#39;logical&#39;</span>
+	<span class="p">),</span> <span class="n">byrow</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="m">4</span><span class="p">);</span>
+<span class="n">opt</span> <span class="o">=</span> <span class="nf">getopt</span><span class="p">(</span><span class="n">spec</span><span class="p">);</span>
+<span class="n">print_usage</span> <span class="o">&lt;-</span> <span class="nf">function</span><span class="p">(</span><span class="n">spec</span><span class="o">=</span><span class="kc">NULL</span><span class="p">){</span>
+	<span class="nf">cat</span><span class="p">(</span><span class="nf">getopt</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">usage</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">));</span>
+	<span class="nf">cat</span><span class="p">(</span><span class="s">&#34;Usage example: \n&#34;</span><span class="p">);</span>
+	<span class="nf">cat</span><span class="p">(</span><span class="s">&#34;
+</span><span class="s">Usage example:
+</span><span class="s">	Rscript eqtl.R
+</span><span class="s">
+</span><span class="s">Usage:
+</span><span class="s">	--snps	the snps file
+</span><span class="s">	--expressions	the expressions file
+</span><span class="s">	--covariates	the covariates file
+</span><span class="s">	--snpspos	snps position file
+</span><span class="s">	--genespos	genes position file
+</span><span class="s">	--threshold	threshold, defaule 1e-2
+</span><span class="s">	--distance	distance, default 1e6
+</span><span class="s">	--model	model, such as ANOVA/A, LINEAR/L, LINEAR_CROSS/C, default LINEAR
+</span><span class="s">	--outdir	outdir
+</span><span class="s">	--help	usage\n&#34;</span>
+	<span class="p">);</span>
+	<span class="nf">q</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="m">1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nf">if </span><span class="p">(</span> <span class="o">!</span><span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">help</span><span class="p">))</span> <span class="p">{</span> <span class="nf">print_usage</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span> <span class="p">}</span>
+<span class="nf">if </span><span class="p">(</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">snps</span><span class="p">))</span> <span class="p">{</span> <span class="nf">print_usage</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span> <span class="p">}</span>
+<span class="nf">if </span><span class="p">(</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">expressions</span><span class="p">)){</span> <span class="nf">print_usage</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span> <span class="p">}</span>
+<span class="nf">if </span><span class="p">(</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">threshold</span><span class="p">)){</span> <span class="n">opt</span><span class="o">$</span><span class="n">threshold</span> <span class="o">=</span> <span class="m">1e-2</span> <span class="p">}</span>
+<span class="nf">if </span><span class="p">(</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">distance</span><span class="p">)){</span> <span class="n">opt</span><span class="o">$</span><span class="n">distance</span> <span class="o">=</span> <span class="m">1e6</span> <span class="p">}</span>
+<span class="nf">if </span><span class="p">(</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">model</span><span class="p">)){</span> <span class="n">opt</span><span class="o">$</span><span class="n">model</span> <span class="o">=</span> <span class="s">&#39;A&#39;</span> <span class="p">}</span>
+<span class="nf">if </span><span class="p">(</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">outdir</span><span class="p">)){</span> <span class="nf">print_usage</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span> <span class="p">}</span>
+<span class="c1"># if ( is.null(opt$covariates)){ print_usage(spec) }</span>
+
+
+<span class="nf">suppressMessages</span><span class="p">(</span><span class="nf">library</span><span class="p">(</span><span class="n">MatrixEQTL</span><span class="p">))</span>
+
+<span class="nf">if</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">model</span> <span class="o">==</span> <span class="s">&#39;L&#39;</span><span class="p">){</span>
+	<span class="n">useModel</span> <span class="o">=</span> <span class="n">modelLINEAR</span><span class="p">;</span>
+<span class="p">}</span><span class="n">else</span> <span class="nf">if</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">model</span> <span class="o">==</span> <span class="s">&#39;A&#39;</span><span class="p">){</span>
+	<span class="n">useModel</span> <span class="o">=</span> <span class="n">modelANOVA</span>
+<span class="p">}</span><span class="n">else</span> <span class="nf">if</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">model</span> <span class="o">==</span> <span class="s">&#39;C&#39;</span><span class="p">){</span>
+	<span class="n">useModel</span> <span class="o">=</span> <span class="n">modelLINEAR_CROSS</span>
+<span class="p">}</span>
+
+<span class="n">snps</span> <span class="o">=</span> <span class="n">SlicedData</span><span class="o">$</span><span class="nf">new</span><span class="p">();</span>
+<span class="n">snps</span><span class="o">$</span><span class="n">fileDelimiter</span> <span class="o">=</span> <span class="s">&#34;\t&#34;</span><span class="p">;</span>      <span class="c1"># the TAB character</span>
+<span class="n">snps</span><span class="o">$</span><span class="n">fileOmitCharacters</span> <span class="o">=</span> <span class="s">&#34;NA&#34;</span><span class="p">;</span> <span class="c1"># denote missing values;</span>
+<span class="n">snps</span><span class="o">$</span><span class="n">fileSkipRows</span> <span class="o">=</span> <span class="m">1</span><span class="p">;</span>          <span class="c1"># one row of column labels</span>
+<span class="n">snps</span><span class="o">$</span><span class="n">fileSkipColumns</span> <span class="o">=</span> <span class="m">1</span><span class="p">;</span>       <span class="c1"># one column of row labels</span>
+<span class="n">snps</span><span class="o">$</span><span class="nf">LoadFile</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">snps</span><span class="p">);</span>
+
+<span class="n">gene</span> <span class="o">=</span> <span class="n">SlicedData</span><span class="o">$</span><span class="nf">new</span><span class="p">();</span>
+<span class="n">gene</span><span class="o">$</span><span class="n">fileDelimiter</span> <span class="o">=</span> <span class="s">&#34;\t&#34;</span><span class="p">;</span>      <span class="c1"># the TAB character</span>
+<span class="n">gene</span><span class="o">$</span><span class="n">fileOmitCharacters</span> <span class="o">=</span> <span class="s">&#34;NA&#34;</span><span class="p">;</span> <span class="c1"># denote missing values;</span>
+<span class="n">gene</span><span class="o">$</span><span class="n">fileSkipRows</span> <span class="o">=</span> <span class="m">1</span><span class="p">;</span>          <span class="c1"># one row of column labels</span>
+<span class="n">gene</span><span class="o">$</span><span class="n">fileSkipColumns</span> <span class="o">=</span> <span class="m">1</span><span class="p">;</span>       <span class="c1"># one column of row labels</span>
+<span class="n">gene</span><span class="o">$</span><span class="nf">LoadFile</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">expressions</span><span class="p">);</span>
+<span class="c1"># errorCovariance = numeric();</span>
+<span class="n">pvOutputThreshold</span> <span class="o">=</span> <span class="n">opt</span><span class="o">$</span><span class="n">threshold</span>
+<span class="n">cvrt</span> <span class="o">=</span> <span class="n">SlicedData</span><span class="o">$</span><span class="nf">new</span><span class="p">();</span>
+<span class="n">cvrt</span><span class="o">$</span><span class="n">fileDelimiter</span> <span class="o">=</span> <span class="s">&#34;\t&#34;</span><span class="p">;</span>      <span class="c1"># the TAB character</span>
+<span class="n">cvrt</span><span class="o">$</span><span class="n">fileOmitCharacters</span> <span class="o">=</span> <span class="s">&#34;NA&#34;</span><span class="p">;</span> <span class="c1"># denote missing values;</span>
+<span class="n">cvrt</span><span class="o">$</span><span class="n">fileSkipRows</span> <span class="o">=</span> <span class="m">1</span><span class="p">;</span>          <span class="c1"># one row of column labels</span>
+<span class="n">cvrt</span><span class="o">$</span><span class="n">fileSkipColumns</span> <span class="o">=</span> <span class="m">1</span><span class="p">;</span>       <span class="c1"># one column of row labels</span>
+<span class="nf">if</span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">covariates</span><span class="p">)</span><span class="o">&gt;</span><span class="m">0</span><span class="p">)</span> <span class="p">{</span>
+	<span class="n">cvrt</span><span class="o">$</span><span class="nf">LoadFile</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">covariates</span><span class="p">);</span>
+<span class="p">}</span>
+
+
+<span class="nf">if </span><span class="p">(</span><span class="o">!</span><span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">snpspos</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">!</span><span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">genespos</span><span class="p">)){</span>
+<span class="n">output_file_name_cis</span> <span class="o">=</span> <span class="nf">tempfile</span><span class="p">();</span>
+<span class="n">output_file_name_tra</span> <span class="o">=</span> <span class="nf">tempfile</span><span class="p">();</span>
+<span class="n">pvOutputThreshold_cis</span> <span class="o">=</span> <span class="n">opt</span><span class="o">$</span><span class="n">threshold</span><span class="p">;</span>
+<span class="n">pvOutputThreshold_tra</span> <span class="o">=</span> <span class="n">opt</span><span class="o">$</span><span class="n">threshold</span><span class="p">;</span>
+<span class="n">cisDist</span> <span class="o">=</span> <span class="n">opt</span><span class="o">$</span><span class="n">distance</span><span class="p">;</span>
+<span class="n">snpspos</span> <span class="o">=</span> <span class="nf">read.table</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">snpspos</span><span class="p">,</span> <span class="n">header</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span> <span class="n">stringsAsFactors</span> <span class="o">=</span> <span class="kc">FALSE</span><span class="p">);</span>
+<span class="n">genepos</span> <span class="o">=</span> <span class="nf">read.table</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">genespos</span><span class="p">,</span> <span class="n">header</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span> <span class="n">stringsAsFactors</span> <span class="o">=</span> <span class="kc">FALSE</span><span class="p">);</span>
+<span class="n">meq</span> <span class="o">=</span> <span class="nf">Matrix_eQTL_main</span><span class="p">(</span>
+	<span class="n">snps</span> <span class="o">=</span> <span class="n">snps</span><span class="p">,</span>
+	<span class="n">gene</span> <span class="o">=</span> <span class="n">gene</span><span class="p">,</span>
+	<span class="n">cvrt</span> <span class="o">=</span> <span class="n">cvrt</span><span class="p">,</span>
+	<span class="n">output_file_name</span> <span class="o">=</span> <span class="n">output_file_name_tra</span><span class="p">,</span>
+	<span class="n">pvOutputThreshold</span> <span class="o">=</span> <span class="n">pvOutputThreshold_tra</span><span class="p">,</span>
+	<span class="n">useModel</span> <span class="o">=</span> <span class="n">useModel</span><span class="p">,</span>
+	<span class="c1"># errorCovariance = errorCovariance,</span>
+	<span class="n">verbose</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span>
+	<span class="n">output_file_name.cis</span> <span class="o">=</span> <span class="n">output_file_name_cis</span><span class="p">,</span>
+	<span class="n">pvOutputThreshold.cis</span> <span class="o">=</span> <span class="n">pvOutputThreshold_cis</span><span class="p">,</span>
+	<span class="n">snpspos</span> <span class="o">=</span> <span class="n">snpspos</span><span class="p">,</span>
+	<span class="n">genepos</span> <span class="o">=</span> <span class="n">genepos</span><span class="p">,</span>
+	<span class="n">cisDist</span> <span class="o">=</span> <span class="n">cisDist</span><span class="p">,</span>
+	<span class="n">pvalue.hist</span> <span class="o">=</span> <span class="s">&#34;qqplot&#34;</span><span class="p">,</span>
+	<span class="n">min.pv.by.genesnp</span> <span class="o">=</span> <span class="kc">FALSE</span><span class="p">,</span>
+	<span class="n">noFDRsaveMemory</span> <span class="o">=</span> <span class="kc">FALSE</span><span class="p">);</span>
+<span class="nf">unlink</span><span class="p">(</span><span class="n">output_file_name_tra</span><span class="p">);</span>
+<span class="nf">unlink</span><span class="p">(</span><span class="n">output_file_name_cis</span><span class="p">);</span>
+<span class="nf">write.csv</span><span class="p">(</span><span class="n">meq</span><span class="o">$</span><span class="n">cis</span><span class="o">$</span><span class="n">eqtl</span><span class="p">,</span> <span class="nf">paste</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">outdir</span><span class="p">,</span><span class="s">&#39;cis.eqtl.csv&#39;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">),</span><span class="n">row.names</span><span class="o">=</span><span class="bp">F</span><span class="p">,</span><span class="n">quote</span><span class="o">=</span><span class="bp">F</span><span class="p">)</span>
+<span class="nf">write.csv</span><span class="p">(</span><span class="n">meq</span><span class="o">$</span><span class="n">trans</span><span class="o">$</span><span class="n">eqtl</span><span class="p">,</span> <span class="nf">paste</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">outdir</span><span class="p">,</span><span class="s">&#39;trans.eqtl.csv&#39;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">),</span><span class="n">row.names</span><span class="o">=</span><span class="bp">F</span><span class="p">,</span><span class="n">quote</span><span class="o">=</span><span class="bp">F</span><span class="p">)</span>
+<span class="nf">save.image</span><span class="p">(</span><span class="s">&#34;meq.RData&#34;</span><span class="p">)</span>
+<span class="n">meh</span> <span class="o">=</span> <span class="nf">Matrix_eQTL_main</span><span class="p">(</span>
+	<span class="n">snps</span> <span class="o">=</span> <span class="n">snps</span><span class="p">,</span>
+        <span class="n">gene</span> <span class="o">=</span> <span class="n">gene</span><span class="p">,</span>
+        <span class="n">cvrt</span> <span class="o">=</span> <span class="n">cvrt</span><span class="p">,</span>
+        <span class="n">output_file_name</span> <span class="o">=</span> <span class="n">output_file_name_tra</span><span class="p">,</span>
+        <span class="n">pvOutputThreshold</span> <span class="o">=</span> <span class="n">pvOutputThreshold_tra</span><span class="p">,</span>
+	<span class="n">useModel</span> <span class="o">=</span> <span class="n">useModel</span><span class="p">,</span>
+        <span class="c1"># errorCovariance = numeric(),</span>
+	<span class="n">verbose</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span>
+	<span class="n">output_file_name.cis</span> <span class="o">=</span> <span class="n">output_file_name_cis</span><span class="p">,</span>
+	<span class="n">pvOutputThreshold.cis</span> <span class="o">=</span> <span class="n">pvOutputThreshold_cis</span><span class="p">,</span>
+	<span class="n">snpspos</span> <span class="o">=</span> <span class="n">snpspos</span><span class="p">,</span>
+	<span class="n">genepos</span> <span class="o">=</span> <span class="n">genepos</span><span class="p">,</span><span class="n">cisDist</span> <span class="o">=</span> <span class="n">cisDist</span><span class="p">,</span>
+	<span class="n">pvalue.hist</span> <span class="o">=</span> <span class="m">100</span><span class="p">,</span>
+	<span class="n">min.pv.by.genesnp</span> <span class="o">=</span> <span class="kc">FALSE</span><span class="p">,</span>
+	<span class="n">noFDRsaveMemory</span> <span class="o">=</span> <span class="kc">FALSE</span><span class="p">);</span>
+<span class="c1">## Results:</span>
+<span class="c1"># write.csv(meq$cis$eqtl, paste(opt$outdir,&#39;cis.eqtl.csv&#39;,sep=&#39;&#39;),quote=F)</span>
+<span class="c1"># write.csv(meq$trans$eqtl, paste(opt$outdir,&#39;trans.eqtl.csv&#39;,sep=&#39;&#39;),quote=F)</span>
+<span class="c1"># cat(&#39;Analysis done in: &#39;, meq$time.in.sec+meh$time.in.sec, &#39; seconds&#39;, &#39;\n&#39;);</span>
+<span class="p">}</span><span class="n">else</span><span class="p">{</span>
+	<span class="n">output_file_name</span> <span class="o">=</span> <span class="nf">tempfile</span><span class="p">();</span>
+	<span class="n">meq</span> <span class="o">=</span> <span class="nf">Matrix_eQTL_engine</span><span class="p">(</span><span class="n">snps</span> <span class="o">=</span> <span class="n">snps</span><span class="p">,</span><span class="n">gene</span> <span class="o">=</span> <span class="n">gene</span><span class="p">,</span><span class="n">cvrt</span> <span class="o">=</span> <span class="n">cvrt</span><span class="p">,</span>
+		<span class="n">output_file_name</span> <span class="o">=</span> <span class="n">output_file_name</span><span class="p">,</span><span class="n">pvOutputThreshold</span> <span class="o">=</span> <span class="n">pvOutputThreshold</span><span class="p">,</span>
+		<span class="n">useModel</span> <span class="o">=</span> <span class="n">useModel</span><span class="p">,</span>
+		<span class="c1"># errorCovariance = errorCovariance,</span>
+		<span class="n">verbose</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span>
+		<span class="n">pvalue.hist</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span><span class="n">min.pv.by.genesnp</span> <span class="o">=</span> <span class="kc">FALSE</span><span class="p">,</span><span class="n">noFDRsaveMemory</span> <span class="o">=</span> <span class="kc">FALSE</span><span class="p">);</span>
+	<span class="n">meh</span> <span class="o">=</span> <span class="nf">Matrix_eQTL_engine</span><span class="p">(</span>
+		<span class="n">snps</span> <span class="o">=</span> <span class="n">snps</span><span class="p">,</span>
+		<span class="n">gene</span> <span class="o">=</span> <span class="n">gene</span><span class="p">,</span>
+		<span class="n">cvrt</span> <span class="o">=</span> <span class="n">cvrt</span><span class="p">,</span>
+		<span class="n">output_file_name</span> <span class="o">=</span> <span class="n">output_file_name</span><span class="p">,</span>
+		<span class="n">pvOutputThreshold</span> <span class="o">=</span> <span class="n">pvOutputThreshold</span><span class="p">,</span>
+		<span class="n">useModel</span> <span class="o">=</span> <span class="n">useModel</span><span class="p">,</span>
+		<span class="c1"># errorCovariance = numeric(),</span>
+		<span class="n">verbose</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span>
+		<span class="n">pvalue.hist</span> <span class="o">=</span> <span class="m">100</span><span class="p">);</span>
+	<span class="nf">unlink</span><span class="p">(</span> <span class="n">filename</span> <span class="p">);</span>
+	<span class="nf">unlink</span><span class="p">(</span><span class="n">output_file_name</span><span class="p">);</span>
+	<span class="nf">write.csv</span><span class="p">(</span><span class="n">meq</span><span class="o">$</span><span class="n">all</span><span class="o">$</span><span class="n">eqtls</span><span class="p">,</span><span class="nf">paste</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">outdir</span><span class="p">,</span><span class="s">&#39;eqtl.csv&#39;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">),</span><span class="n">row.names</span><span class="o">=</span><span class="bp">F</span><span class="p">,</span><span class="n">quote</span><span class="o">=</span><span class="bp">F</span><span class="p">)</span>
+<span class="c1"># cat(&#39;Analysis done in: &#39;, meq$time.in.sec+meh$time.in.sec, &#39; seconds&#39;, &#39;\n&#39;);</span>
+<span class="p">}</span>
+<span class="nf">save.image</span><span class="p">(</span><span class="s">&#34;calculat.RData&#34;</span><span class="p">)</span>
+<span class="c1">## Plot the Q-Q plot </span>
+<span class="nf">png</span><span class="p">(</span><span class="nf">paste</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">outdir</span><span class="p">,</span><span class="s">&#34;Q-Q.png&#34;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">))</span>
+<span class="nf">plot</span><span class="p">(</span><span class="n">meq</span><span class="p">)</span>
+<span class="nf">dev.off</span><span class="p">()</span>
+
+<span class="nf">pdf</span><span class="p">(</span><span class="nf">paste</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">outdir</span><span class="p">,</span><span class="s">&#34;Q-Q.pdf&#34;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">))</span>
+<span class="nf">plot</span><span class="p">(</span><span class="n">meq</span><span class="p">)</span>
+<span class="nf">dev.off</span><span class="p">()</span>
+
+<span class="c1">## Plot the histogram plot</span>
+<span class="nf">png</span><span class="p">(</span><span class="nf">paste</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">outdir</span><span class="p">,</span><span class="s">&#34;histogram.png&#34;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">))</span>
+<span class="nf">plot</span><span class="p">(</span><span class="n">meh</span><span class="p">,</span><span class="n">col</span><span class="o">=</span><span class="s">&#34;grey&#34;</span><span class="p">)</span>
+<span class="nf">dev.off</span><span class="p">()</span>
+
+<span class="c1">## Plot the histogram plot</span>
+<span class="nf">pdf</span><span class="p">(</span><span class="nf">paste</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">outdir</span><span class="p">,</span><span class="s">&#34;histogram.pdf&#34;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">))</span>
+<span class="nf">plot</span><span class="p">(</span><span class="n">meh</span><span class="p">,</span><span class="n">col</span><span class="o">=</span><span class="s">&#34;grey&#34;</span><span class="p">)</span>
+<span class="nf">dev.off</span><span class="p">()</span>
+
+<span class="nf">save.image</span><span class="p">(</span><span class="s">&#34;eQTL.RData&#34;</span><span class="p">)</span>
+</code></pre></div><h3 id="结果展示-2">结果展示：</h3>
+<p><img
+        class="lazyload"
+        src="/MajorbioHuGo/svg/loading.min.svg"
+        data-src="step03.result.png"
+        data-srcset="/MajorbioHuGo/posts/matrix-eqtl-twas/step03.result.png, step03.result.png 1.5x, /MajorbioHuGo/posts/matrix-eqtl-twas/step03.result.png 2x"
+        data-sizes="auto"
+        alt="/MajorbioHuGo/posts/matrix-eqtl-twas/step03.result.png"
+        title="step03.result.png" /></p>
+<p><img
+        class="lazyload"
+        src="/MajorbioHuGo/svg/loading.min.svg"
+        data-src="step03.result-details.png"
+        data-srcset="/MajorbioHuGo/posts/matrix-eqtl-twas/step03.result-details.png, step03.result-details.png 1.5x, /MajorbioHuGo/posts/matrix-eqtl-twas/step03.result-details.png 2x"
+        data-sizes="auto"
+        alt="/MajorbioHuGo/posts/matrix-eqtl-twas/step03.result-details.png"
+        title="step03.result-details.png" /></p>
+<h2 id="参考文献">参考文献</h2>
+<p>Andrey A. Shabalin, <a href="https://doi.org/10.1093/bioinformatics/bts163" target="_blank" rel="noopener noreffer">Matrix eQTL: ultra fast eQTL analysis via large matrix operations</a>, Bioinformatics, Volume 28, Issue 10, 15 May 2012, Pages 1353–1358.</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2020-12-18</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/MajorbioHuGo/tags/eqtl/">eQTL</a>,&nbsp;<a href="/MajorbioHuGo/tags/twas/">TWAS</a>,&nbsp;<a href="/MajorbioHuGo/tags/rnaseq/">RNAseq</a>,&nbsp;<a href="/MajorbioHuGo/tags/%E8%A1%A8%E8%BE%BE%E9%87%8F/">表达量</a>,&nbsp;<a href="/MajorbioHuGo/tags/%E5%AE%9A%E4%BD%8D/">定位</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/MajorbioHuGo/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/MajorbioHuGo/posts/probabilistic-estimation-of-expression-residuals/" class="prev" rel="prev" title="Using probabilistic estimation of expression residuals (PEER) to obtain increased power and interpretability of gene expression analyses"><i class="fas fa-angle-left fa-fw"></i>Using probabilistic estimation of expression residuals (PEER) to obtain increased power and interpretability of gene expression analyses</a>
+            <a href="/MajorbioHuGo/posts/stem-sop/" class="next" rel="next" title="The Short Time-series Expression Miner">The Short Time-series Expression Miner<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.79.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2020</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/MajorbioHuGo/" target="_blank"></a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="/MajorbioHuGo/lib/lightgallery/lightgallery.min.css"><script type="text/javascript" src="/MajorbioHuGo/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/MajorbioHuGo/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/MajorbioHuGo/lib/algoliasearch/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="/MajorbioHuGo/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/MajorbioHuGo/lib/lightgallery/lightgallery.min.js"></script><script type="text/javascript" src="/MajorbioHuGo/lib/lightgallery/lg-thumbnail.min.js"></script><script type="text/javascript" src="/MajorbioHuGo/lib/lightgallery/lg-zoom.min.js"></script><script type="text/javascript" src="/MajorbioHuGo/lib/clipboard/clipboard.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"algoliaAppID":"VX4BXOJBC5","algoliaIndex":"majorbio.zh-cn","algoliaSearchKey":"53790f167edb548b217bfe91dd891ac0","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"}};</script><script type="text/javascript" src="/MajorbioHuGo/js/theme.min.js"></script></body>
+</html>

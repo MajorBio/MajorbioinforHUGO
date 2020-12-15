@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>热图制作 - 美吉生物信息团队</title><meta name="Description" content="各种热图制作"><meta property="og:title" content="热图制作" />
+<meta property="og:description" content="各种热图制作" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://czheluo.github.io/MajorbioHuGo/posts/heatmap-dataviz/" />
+<meta property="og:image" content="http://czheluo.github.io/MajorbioHuGo/posts/heatmap-dataviz/complexheatmap.png"/>
+<meta property="article:published_time" content="2020-12-14T16:29:59+08:00" />
+<meta property="article:modified_time" content="2020-12-19T16:29:59+08:00" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="http://czheluo.github.io/MajorbioHuGo/posts/heatmap-dataviz/complexheatmap.png"/>
+<meta name="twitter:title" content="热图制作"/>
+<meta name="twitter:description" content="各种热图制作"/>
+<meta name="application-name" content="美吉生物信息团队">
+<meta name="apple-mobile-web-app-title" content="美吉生物信息团队"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://czheluo.github.io/MajorbioHuGo/posts/heatmap-dataviz/" /><link rel="prev" href="http://czheluo.github.io/MajorbioHuGo/posts/basic-markdown-syntax/" /><link rel="next" href="http://czheluo.github.io/MajorbioHuGo/posts/mapping-make-fake-data/" /><link rel="stylesheet" href="/MajorbioHuGo/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/MajorbioHuGo/css/style.min.css"><link rel="stylesheet" href="/MajorbioHuGo/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/MajorbioHuGo/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "热图制作",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/czheluo.github.io\/MajorbioHuGo\/posts\/heatmap-dataviz\/"
+        },"image": [{
+                            "@type": "ImageObject",
+                            "url": "http:\/\/czheluo.github.io\/MajorbioHuGo\/posts\/heatmap-dataviz\/complexheatmap.png",
+                            "width":  1000 ,
+                            "height":  800 
+                        }],"genre": "posts","keywords": "heatmap, 热图","wordcount":  1049 ,
+        "url": "http:\/\/czheluo.github.io\/MajorbioHuGo\/posts\/heatmap-dataviz\/","datePublished": "2020-12-14T16:29:59+08:00","dateModified": "2020-12-19T16:29:59+08:00","publisher": {
+            "@type": "Organization",
+            "name": "Xiaolong He"},"author": {
+                "@type": "Person",
+                "name": "Xiaolong He"
+            },"description": "各种热图制作"
+    }
+    </script></head>
+    <body header-desktop="" header-mobile=""><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : '' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/MajorbioHuGo/" title="美吉生物信息团队">美吉生物信息团队</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/MajorbioHuGo/MajorbioHuGo/posts/"> 所有文章 </a><a class="menu-item" href="/MajorbioHuGo/MajorbioHuGo/tags/"> 标签 </a><a class="menu-item" href="/MajorbioHuGo/MajorbioHuGo/categories/"> 分类 </a><a class="menu-item" href="/MajorbioHuGo/MajorbioHuGo/categories/documentation/"> 文档 </a><a class="menu-item" href="/MajorbioHuGo/MajorbioHuGo/about/"> 关于 </a><a class="menu-item" href="/MajorbioHuGo" title="GitHub"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/MajorbioHuGo/" title="美吉生物信息团队">美吉生物信息团队</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/MajorbioHuGo/MajorbioHuGo/posts/" title="">所有文章</a><a class="menu-item" href="/MajorbioHuGo/MajorbioHuGo/tags/" title="">标签</a><a class="menu-item" href="/MajorbioHuGo/MajorbioHuGo/categories/" title="">分类</a><a class="menu-item" href="/MajorbioHuGo/MajorbioHuGo/categories/documentation/" title="">文档</a><a class="menu-item" href="/MajorbioHuGo/MajorbioHuGo/about/" title="">关于</a><a class="menu-item" href="/MajorbioHuGo" title="GitHub"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">热图制作</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/xiaolong-he999" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw"></i>Xiaolong He</a></span>&nbsp;<span class="post-category">收录于 <a href="/MajorbioHuGo/categories/tools/"><i class="far fa-folder fa-fw"></i>tools</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-12-14">2020-12-14</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 1049 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 3 分钟&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/MajorbioHuGo/svg/loading.min.svg"
+        data-src="/MajorbioHuGo/posts/heatmap-dataviz/complexheatmap.png"
+        data-srcset="/MajorbioHuGo/posts/heatmap-dataviz/complexheatmap.png, /MajorbioHuGo/posts/heatmap-dataviz/complexheatmap.png 1.5x, /MajorbioHuGo/posts/heatmap-dataviz/complexheatmap.png 2x"
+        data-sizes="auto"
+        alt="/MajorbioHuGo/posts/heatmap-dataviz/complexheatmap.png"
+        title="各种热图制作" /></div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#参数详情">参数详情</a></li>
+      </ul>
+    </li>
+    <li><a href="#代码">代码</a></li>
+    <li><a href="#结果展示">结果展示</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="heatmap">Heatmap</h1>
+<p>脚本所用软件包为：<a href="https://jokergoo.github.io/ComplexHeatmap-reference/book/index.html" target="_blank" rel="noopener noreffer">Complex Heatmap</a></p>
+<h1 id="一-数据准备">一. 数据准备</h1>
+<p>数据矩阵：</p>
+<p><img
+        class="lazyload"
+        src="/MajorbioHuGo/svg/loading.min.svg"
+        data-src="matrix.png"
+        data-srcset="/MajorbioHuGo/posts/heatmap-dataviz/matrix.png, matrix.png 1.5x, /MajorbioHuGo/posts/heatmap-dataviz/matrix.png 2x"
+        data-sizes="auto"
+        alt="/MajorbioHuGo/posts/heatmap-dataviz/matrix.png"
+        title="matrix" /></p>
+<p>分组文件：</p>
+<p><img
+        class="lazyload"
+        src="/MajorbioHuGo/svg/loading.min.svg"
+        data-src="group.png"
+        data-srcset="/MajorbioHuGo/posts/heatmap-dataviz/group.png, group.png 1.5x, /MajorbioHuGo/posts/heatmap-dataviz/group.png 2x"
+        data-sizes="auto"
+        alt="/MajorbioHuGo/posts/heatmap-dataviz/group.png"
+        title="group" /></p>
+<h1 id="二-使用说明">二. 使用说明</h1>
+<p>脚本路径：<code>/mnt/ilustre/centos7users/xiaolong.he/develop/plot/heatmap/heatmap.R</code></p>
+<h1 id="用法示例">用法示例：</h1>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="n">export</span> <span class="n">R_LIBS</span><span class="o">=</span><span class="p">;</span><span class="n">export</span> <span class="n">R_HOME</span><span class="o">=</span><span class="p">;</span><span class="n">export</span> <span class="n">RHOME</span><span class="o">=</span><span class="p">;</span><span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="n">ilustre</span><span class="o">/</span><span class="n">centos7users</span><span class="o">/</span><span class="n">dna</span><span class="o">/</span><span class="n">.env</span><span class="o">/</span><span class="n">R</span><span class="m">-3.6.1</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">Rscript</span> <span class="n">heatmap.R</span> <span class="o">-</span><span class="n">i</span> <span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="n">ilustre</span><span class="o">/</span><span class="n">centos7users</span><span class="o">/</span><span class="n">xiaolong.he</span><span class="o">/</span><span class="n">develop</span><span class="o">/</span><span class="n">plot</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">heatmap.data.txt</span> <span class="o">-</span><span class="n">g</span> <span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="n">ilustre</span><span class="o">/</span><span class="n">centos7users</span><span class="o">/</span><span class="n">xiaolong.he</span><span class="o">/</span><span class="n">develop</span><span class="o">/</span><span class="n">plot</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">group.txt</span> <span class="o">-</span><span class="n">a</span> <span class="m">5</span> <span class="o">-</span><span class="n">c</span> <span class="n">both</span> <span class="o">-</span><span class="n">n</span> <span class="n">col</span> <span class="o">-</span><span class="n">s</span> <span class="n">log10</span> <span class="o">-</span><span class="n">l</span> <span class="n">blue</span><span class="p">,</span><span class="n">white</span><span class="p">,</span><span class="n">red</span> <span class="o">-</span><span class="n">m</span> <span class="n">complete</span><span class="p">,</span><span class="n">complete</span> <span class="o">-</span><span class="n">d</span> <span class="n">euclidean</span><span class="p">,</span><span class="n">euclidean</span> <span class="o">-</span><span class="n">o</span> <span class="n">test</span>
+</code></pre></div><p><img
+        class="lazyload"
+        src="/MajorbioHuGo/svg/loading.min.svg"
+        data-src="usage.png"
+        data-srcset="/MajorbioHuGo/posts/heatmap-dataviz/usage.png, usage.png 1.5x, /MajorbioHuGo/posts/heatmap-dataviz/usage.png 2x"
+        data-sizes="auto"
+        alt="/MajorbioHuGo/posts/heatmap-dataviz/usage.png"
+        title="Usage" /></p>
+<h3 id="参数详情">参数详情</h3>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="o">--</span><span class="n">input</span>	<span class="n">must</span>	<span class="n">expression</span> <span class="n">matrix</span> <span class="c1"># 输入文件，表达量矩阵</span>
+<span class="o">--</span><span class="n">outpre</span>	<span class="n">must</span>	<span class="n">outfile</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">default</span> <span class="n">heatmap</span> <span class="c1"># 输出文件前缀</span>
+<span class="o">--</span><span class="n">cluster</span>	<span class="n">selectable</span>	<span class="n">row</span><span class="p">,</span><span class="n">col</span><span class="p">,</span><span class="n">both</span> <span class="n">or</span> <span class="n">None</span><span class="p">,</span> <span class="n">default</span> <span class="n">both</span> <span class="c1"># 是否行列聚类</span>
+<span class="o">--</span><span class="n">name</span>	<span class="n">selectable</span>	<span class="n">row</span><span class="p">,</span><span class="n">col</span><span class="p">,</span><span class="n">both</span> <span class="n">or</span> <span class="n">None</span><span class="p">,</span> <span class="n">default</span> <span class="n">col</span> <span class="c1"># 是否显示行列名</span>
+<span class="o">--</span><span class="n">scale</span>	<span class="n">selectable</span>	<span class="n">scale</span> <span class="n">method</span><span class="p">,</span><span class="n">log2</span><span class="p">,</span><span class="n">log10</span><span class="p">,</span><span class="n">zscore</span> <span class="n">or</span> <span class="n">no</span> <span class="n">scale</span> <span class="c1"># 是否进行数据标准化，默认不做处理</span>
+<span class="o">--</span><span class="n">color</span>	<span class="n">selectable</span>	<span class="n">heatmap</span> <span class="n">color</span> <span class="c1"># 热图颜色</span>
+<span class="o">--</span><span class="n">annot</span>	<span class="n">selectable</span>	<span class="n">row</span> <span class="n">annotation</span> <span class="c1"># 列注释，按所给数值进行划分聚类结果，进行行注释</span>
+<span class="o">--</span><span class="n">group</span>	<span class="n">selectable</span>	<span class="n">sample</span> <span class="n">groups</span> <span class="n">file</span> <span class="c1"># 分组文件，热图列注释按分组文件进行</span>
+<span class="c1"># 聚类方式，默认complete</span>
+<span class="o">--</span><span class="n">clustermethod</span>	<span class="n">selectable</span>	<span class="n">rows</span><span class="o">/</span><span class="n">col</span> <span class="n">cluster</span> <span class="n">method</span><span class="p">,</span><span class="n">average</span><span class="o">/</span><span class="n">centroid</span><span class="o">/</span><span class="n">median</span><span class="o">/</span><span class="n">complete</span><span class="o">/</span><span class="n">single</span><span class="o">/</span><span class="n">ward</span><span class="o">/</span><span class="n">density</span><span class="p">,</span><span class="n">default</span> <span class="n">both</span> <span class="n">complete</span>
+<span class="c1"># 聚类距离，默认euclidean</span>
+<span class="o">--</span><span class="n">distancemethod</span>	<span class="n">selectable</span>	<span class="n">rows</span><span class="o">/</span><span class="n">col</span> <span class="n">distance</span> <span class="n">method</span><span class="p">,</span> <span class="n">euclidean</span><span class="o">/</span><span class="n">maximum</span><span class="o">/</span><span class="n">manhattan</span><span class="o">/</span><span class="n">canberra</span><span class="o">/</span><span class="n">binary</span><span class="o">/</span><span class="n">minkowski</span><span class="o">/</span><span class="n">pearson</span><span class="o">/</span><span class="n">spearman</span><span class="o">/</span><span class="n">kendall</span><span class="p">,</span><span class="n">default</span> <span class="n">both</span> <span class="n">euclidean</span>
+<span class="o">--</span><span class="n">help</span>		<span class="n">usage</span>
+</code></pre></div><h2 id="代码">代码</h2>
+<div class="highlight"><pre class="chroma"><code class="language-r" data-lang="r"><span class="m">1</span> <span class="c1">#!/usr/bin/env Rscript3.6</span>
+<span class="m">2</span> 
+<span class="m">3</span> <span class="nf">suppressMessages</span><span class="p">(</span><span class="nf">library</span><span class="p">(</span><span class="s">&#34;getopt&#34;</span><span class="p">))</span>
+<span class="m">4</span> <span class="nf">options</span><span class="p">(</span><span class="n">bitmapType</span><span class="o">=</span><span class="s">&#39;cairo&#39;</span><span class="p">)</span>
+<span class="m">5</span> <span class="n">spec</span> <span class="o">=</span> <span class="nf">matrix</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span>
+<span class="m">6</span>     <span class="s">&#39;input&#39;</span><span class="p">,</span><span class="s">&#39;i&#39;</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="s">&#39;character&#39;</span><span class="p">,</span>
+<span class="m">7</span>     <span class="s">&#39;outpre&#39;</span><span class="p">,</span><span class="s">&#39;o&#39;</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="s">&#39;character&#39;</span><span class="p">,</span>
+<span class="m">8</span>     <span class="s">&#39;cluster&#39;</span><span class="p">,</span><span class="s">&#39;c&#39;</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="s">&#39;character&#39;</span><span class="p">,</span>
+<span class="m">9</span>     <span class="s">&#39;name&#39;</span><span class="p">,</span><span class="s">&#39;n&#39;</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="s">&#39;character&#39;</span><span class="p">,</span>
+<span class="m">10</span>     <span class="s">&#39;clustermethod&#39;</span><span class="p">,</span><span class="s">&#39;m&#39;</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="s">&#39;character&#39;</span><span class="p">,</span>
+<span class="m">11</span>     <span class="s">&#39;rot&#39;</span><span class="p">,</span><span class="s">&#39;r&#39;</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="s">&#39;numeric&#39;</span><span class="p">,</span>
+<span class="m">12</span>     <span class="s">&#39;distancemethod&#39;</span><span class="p">,</span><span class="s">&#39;d&#39;</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="s">&#39;character&#39;</span><span class="p">,</span>
+<span class="m">13</span>     <span class="s">&#39;scale&#39;</span><span class="p">,</span><span class="s">&#39;s&#39;</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="s">&#39;character&#39;</span><span class="p">,</span>
+<span class="m">14</span>     <span class="s">&#39;annot&#39;</span><span class="p">,</span><span class="s">&#39;a&#39;</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="s">&#39;numeric&#39;</span><span class="p">,</span>
+<span class="m">15</span>     <span class="s">&#39;group&#39;</span><span class="p">,</span><span class="s">&#39;g&#39;</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="s">&#39;character&#39;</span><span class="p">,</span>
+<span class="m">16</span>     <span class="s">&#39;color&#39;</span><span class="p">,</span><span class="s">&#39;l&#39;</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="s">&#39;character&#39;</span><span class="p">,</span>
+<span class="m">17</span>     <span class="s">&#39;help&#39;</span><span class="p">,</span><span class="s">&#39;h&#39;</span><span class="p">,</span><span class="m">0</span><span class="p">,</span><span class="s">&#39;logical&#39;</span>
+<span class="m">18</span>     <span class="p">),</span> <span class="n">byrow</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="m">4</span><span class="p">);</span>
+<span class="m">19</span> <span class="n">opt</span> <span class="o">=</span> <span class="nf">getopt</span><span class="p">(</span><span class="n">spec</span><span class="p">);</span>
+<span class="m">20</span> <span class="n">print_usage</span> <span class="o">&lt;-</span> <span class="nf">function</span><span class="p">(</span><span class="n">spec</span><span class="o">=</span><span class="kc">NULL</span><span class="p">){</span>
+<span class="m">21</span>   <span class="nf">cat</span><span class="p">(</span><span class="s">&#34;\n*************  R 3.6.1  *************\n\n&#34;</span><span class="p">)</span>
+<span class="m">22</span>   <span class="nf">cat</span><span class="p">(</span><span class="nf">getopt</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">usage</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">));</span>
+<span class="m">23</span>   <span class="nf">cat</span><span class="p">(</span><span class="s">&#34;Usage example: \n&#34;</span><span class="p">);</span>
+<span class="m">24</span>   <span class="nf">cat</span><span class="p">(</span><span class="s">&#34;
+</span><span class="s">25     Rscript heatmap.r
+</span><span class="s">26     Usage:
+</span><span class="s">27     --input     must    expression matrix
+</span><span class="s">28     --outpre    must    outfile prefix, default heatmap
+</span><span class="s">29     --cluster   selectable      row,col,both or None, default both
+</span><span class="s">30     --name      selectable      row,col,both or None, default col
+</span><span class="s">31     --scale     selectable      scale method,log2,log10,zscore orno scale
+</span><span class="s">32     --color     selectable      heatmap color
+</span><span class="s">33     --annot     selectable      row annotation
+</span><span class="s">34     --group     selectable      sample groups file
+</span><span class="s">35     --rot       selectable      rot of row labels
+</span><span class="s">36     --clustermethod     selectable      rows/col cluster method,
+</span><span class="s">37                                 average/centroid/median/completesingle/ward/density,default both complete
+</span><span class="s">38     --distancemethod    selectable      rows/col distance method, 
+</span><span class="s">39                                 euclidean/maximum/manhattancanberra/binary/minkowski/pearson/spearman/kendall,default botheuclidean
+</span><span class="s">40     --help              usage\n&#34;</span>
+<span class="m">41</span>     <span class="p">);</span>
+<span class="m">42</span>   <span class="nf">q</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="m">1</span><span class="p">);</span>
+<span class="m">43</span> <span class="p">}</span>
+<span class="m">44</span> 
+<span class="m">45</span> 
+<span class="m">46</span> <span class="nf">if </span><span class="p">(</span> <span class="o">!</span><span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">help</span><span class="p">))</span> <span class="p">{</span><span class="nf">print_usage</span><span class="p">(</span><span class="n">spec</span><span class="p">)}</span>
+<span class="m">47</span> <span class="nf">if </span><span class="p">(</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">input</span><span class="p">)){</span><span class="nf">print_usage</span><span class="p">(</span><span class="n">spec</span><span class="p">)}</span>
+<span class="m">48</span> <span class="nf">if </span><span class="p">(</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">outpre</span><span class="p">)){</span><span class="nf">print_usage</span><span class="p">(</span><span class="n">spec</span><span class="p">)}</span>
+<span class="m">49</span> <span class="nf">if </span><span class="p">(</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">cluster</span><span class="p">)){</span><span class="n">opt</span><span class="o">$</span><span class="n">cluster</span> <span class="o">=</span> <span class="s">&#39;both&#39;</span><span class="p">}</span>
+<span class="m">50</span> <span class="nf">if </span><span class="p">(</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">name</span><span class="p">)){</span><span class="n">opt</span><span class="o">$</span><span class="n">name</span> <span class="o">=</span> <span class="s">&#39;col&#39;</span><span class="p">}</span>
+<span class="m">51</span> <span class="nf">if </span><span class="p">(</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">rot</span><span class="p">)){</span><span class="n">opt</span><span class="o">$</span><span class="n">rot</span> <span class="o">=</span> <span class="m">90</span><span class="p">}</span>
+<span class="m">52</span> 
+<span class="m">53</span> <span class="c1">## 1.scale  2.cluster 3. annot 4.color </span>
+<span class="m">54</span> 
+<span class="m">55</span> <span class="c1"># load packages</span>
+<span class="m">56</span> <span class="nf">.libPaths</span><span class="p">(</span><span class="s">&#34;/mnt/ilustre/centos7users/xiaolong.he/Rx86_64-pc-linux-gnu-library/3.6/&#34;</span><span class="p">)</span>
+<span class="m">57</span> <span class="nf">suppressMessages</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="nf">library</span><span class="p">(</span><span class="n">circlize</span><span class="p">),</span><span class="nf">library</span><span class="p">(</span><span class="n">ComplexHeatmap</span><span class="p">)))</span>
+<span class="m">58</span> 
+<span class="m">59</span> <span class="c1"># load expression matrix</span>
+<span class="m">60</span> <span class="n">dat</span> <span class="o">&lt;-</span> <span class="nf">as.matrix</span><span class="p">(</span><span class="nf">read.table</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">input</span><span class="p">,</span><span class="n">header</span><span class="o">=</span><span class="bp">T</span><span class="p">,</span><span class="n">row.names</span><span class="o">=</span><span class="m">1</span><span class="n">sep</span><span class="o">=</span><span class="s">&#39;\t&#39;</span><span class="p">,</span><span class="n">stringsAsFactors</span><span class="o">=</span><span class="bp">F</span><span class="p">))</span>
+<span class="m">61</span> 
+<span class="m">62</span> <span class="c1"># scale</span>
+<span class="m">63</span> <span class="nf">if</span><span class="p">(</span><span class="o">!</span><span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">scale</span><span class="p">)){</span>
+<span class="m">64</span>   <span class="nf">if</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">scale</span> <span class="o">==</span> <span class="s">&#39;log2&#39;</span><span class="p">){</span>
+<span class="m">65</span>     <span class="n">dat</span> <span class="o">&lt;-</span> <span class="nf">log2</span><span class="p">(</span><span class="n">dat</span><span class="m">+1</span><span class="p">)</span>
+<span class="m">66</span>   <span class="p">}</span><span class="n">else</span> <span class="nf">if</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">scale</span> <span class="o">==</span> <span class="s">&#39;log10&#39;</span><span class="p">){</span>
+<span class="m">67</span>     <span class="n">dat</span> <span class="o">&lt;-</span> <span class="nf">log10</span><span class="p">(</span><span class="n">dat</span><span class="m">+1</span><span class="p">)</span>
+<span class="m">68</span>   <span class="p">}</span><span class="n">else</span> <span class="nf">if</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">scale</span> <span class="o">==</span> <span class="s">&#39;zscore&#39;</span><span class="p">){</span>
+<span class="m">69</span>     <span class="n">dat</span> <span class="o">&lt;-</span> <span class="nf">scale</span><span class="p">(</span><span class="n">dat</span><span class="p">)</span>
+<span class="m">70</span>   <span class="p">}</span>
+<span class="m">71</span> <span class="p">}</span>
+<span class="m">72</span> 
+<span class="m">73</span> <span class="c1"># cluster</span>
+<span class="m">74</span> <span class="nf">if</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">cluster</span> <span class="o">==</span> <span class="s">&#39;both&#39;</span><span class="p">){</span>
+<span class="m">75</span>   <span class="n">cluster_rows</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">;</span> <span class="n">cluster_columns</span> <span class="o">=</span> <span class="kc">TRUE</span>
+<span class="m">76</span> <span class="p">}</span><span class="n">else</span> <span class="nf">if</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">cluster</span> <span class="o">==</span> <span class="s">&#39;col&#39;</span><span class="p">){</span>
+<span class="m">77</span>   <span class="n">cluster_rows</span> <span class="o">=</span> <span class="kc">FALSE</span><span class="p">;</span><span class="n">cluster_columns</span> <span class="o">=</span> <span class="kc">TRUE</span>
+<span class="m">78</span> <span class="p">}</span><span class="n">else</span> <span class="nf">if</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">cluster</span> <span class="o">==</span> <span class="s">&#39;row&#39;</span><span class="p">){</span>
+<span class="m">79</span>   <span class="n">cluster_rows</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">;</span> <span class="n">cluster_columns</span> <span class="o">=</span> <span class="kc">FALSE</span>
+<span class="m">80</span> <span class="p">}</span><span class="n">else</span> <span class="nf">if</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">cluster</span> <span class="o">==</span> <span class="s">&#39;None&#39;</span><span class="p">){</span>
+<span class="m">81</span>   <span class="n">cluster_rows</span> <span class="o">=</span> <span class="kc">FALSE</span><span class="p">;</span> <span class="n">cluster_columns</span> <span class="o">=</span> <span class="kc">FALSE</span>
+<span class="m">82</span> <span class="p">}</span>
+<span class="m">83</span> 
+<span class="m">84</span> <span class="c1"># row/col names</span>
+<span class="m">85</span> <span class="nf">if</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">name</span> <span class="o">==</span> <span class="s">&#39;both&#39;</span><span class="p">){</span>
+<span class="m">86</span>   <span class="n">row_names</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">;</span><span class="n">columns_names</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">;</span>
+<span class="m">87</span> <span class="p">}</span><span class="n">else</span> <span class="nf">if</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">name</span> <span class="o">==</span> <span class="s">&#39;col&#39;</span><span class="p">){</span>
+<span class="m">88</span>   <span class="n">row_names</span> <span class="o">=</span> <span class="kc">FALSE</span><span class="p">;</span><span class="n">columns_names</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">;</span>
+<span class="m">89</span> <span class="p">}</span><span class="n">else</span> <span class="nf">if</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">name</span> <span class="o">==</span> <span class="s">&#39;row&#39;</span><span class="p">){</span>
+<span class="m">90</span>   <span class="n">row_names</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">;</span><span class="n">columns_names</span> <span class="o">=</span> <span class="kc">FALSE</span><span class="p">;</span>
+<span class="m">91</span> <span class="p">}</span><span class="n">else</span> <span class="nf">if</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">name</span> <span class="o">==</span> <span class="s">&#39;None&#39;</span><span class="p">){</span>
+<span class="m">92</span>   <span class="n">row_names</span> <span class="o">=</span> <span class="kc">FALSE</span><span class="p">;</span><span class="n">columns_names</span> <span class="o">=</span> <span class="kc">FALSE</span><span class="p">;</span>
+<span class="m">93</span> <span class="p">}</span>
+<span class="m">94</span> 
+<span class="m">95</span> <span class="c1"># cluster method</span>
+<span class="m">96</span> <span class="nf">if</span><span class="p">(</span><span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">clustermethod</span><span class="p">)){</span>
+<span class="m">97</span>   <span class="n">Clustering</span> <span class="o">&lt;-</span> <span class="nf">c</span><span class="p">(</span><span class="s">&#39;complete&#39;</span><span class="p">,</span><span class="s">&#39;complete&#39;</span><span class="p">)</span>
+<span class="m">98</span> <span class="p">}</span><span class="n">else</span><span class="p">{</span>
+<span class="m">99</span>   <span class="n">Clustering</span> <span class="o">=</span> <span class="nf">strsplit</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">clustermethod</span><span class="p">,</span> <span class="s">&#39;,&#39;</span><span class="p">)</span><span class="n">[[1]]</span>
+<span class="m">100</span> <span class="p">}</span>
+<span class="m">101</span> 
+<span class="m">102</span> <span class="c1"># distance method</span>
+<span class="m">103</span> <span class="nf">if</span><span class="p">(</span><span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">distancemethod</span><span class="p">)){</span>
+<span class="m">104</span>   <span class="n">distance</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="s">&#39;euclidean&#39;</span><span class="p">,</span> <span class="s">&#39;euclidean&#39;</span><span class="p">)</span>
+<span class="m">105</span> <span class="p">}</span><span class="n">else</span><span class="p">{</span>
+<span class="m">106</span>   <span class="n">distance</span> <span class="o">=</span> <span class="nf">strsplit</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">distancemethod</span><span class="p">,</span> <span class="s">&#39;,&#39;</span><span class="p">)</span><span class="n">[[1]]</span>
+<span class="m">107</span> <span class="p">}</span>
+<span class="m">108</span> 
+<span class="m">109</span> <span class="c1"># color</span>
+<span class="m">110</span> <span class="nf">if</span><span class="p">(</span><span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">color</span><span class="p">)){</span>
+<span class="m">111</span>   <span class="n">color</span> <span class="o">&lt;-</span> <span class="nf">colorRampPalette</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&#34;navy&#34;</span><span class="p">,</span> <span class="s">&#34;white&#34;</span><span class="p">,</span> <span class="s">&#34;firebrick3&#34;</span><span class="p">))(</span><span class="m">50</span><span class="p">)</span>
+<span class="m">112</span> <span class="p">}</span><span class="n">else</span><span class="p">{</span>
+<span class="m">113</span>   <span class="c1">#a &lt;- as.character(strsplit(opt$color, &#39;,&#39;));print(a):prin(typeof(a))</span>
+<span class="m">114</span>   <span class="n">color</span> <span class="o">&lt;-</span> <span class="nf">colorRampPalette</span><span class="p">(</span><span class="nf">as.vector</span><span class="p">(</span><span class="nf">strsplit</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">color</span><span class="p">,</span> <span class="s">&#39;,&#39;</span><span class="p">))</span><span class="n">[1]]</span><span class="p">)(</span><span class="m">50</span><span class="p">)</span>
+<span class="m">115</span> <span class="p">}</span>
+<span class="m">116</span> 
+<span class="m">117</span> <span class="c1"># annot: unused argument( left_annotation), unsolved</span>
+<span class="m">118</span> <span class="nf">if</span><span class="p">(</span><span class="o">!</span><span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">annot</span><span class="p">)){</span>
+<span class="m">119</span>   <span class="n">row_anno</span> <span class="o">&lt;-</span> <span class="nf">rowAnnotation</span><span class="p">(</span><span class="n">foo</span> <span class="o">=</span> <span class="nf">anno_block</span><span class="p">(</span><span class="n">gp</span> <span class="o">=</span> <span class="nf">gpar</span><span class="p">(</span><span class="n">fill</span> <span class="o">=</span> <span class="m">2</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">annot</span><span class="m">+1</span><span class="p">)),</span>
+<span class="m">120</span>     <span class="n">labels_gp</span> <span class="o">=</span> <span class="nf">gpar</span><span class="p">(</span><span class="n">col</span> <span class="o">=</span> <span class="s">&#34;white&#34;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="m">10</span><span class="p">)))</span>
+<span class="m">121</span> <span class="p">}</span>
+<span class="m">122</span> 
+<span class="m">123</span> <span class="nf">if</span><span class="p">(</span><span class="o">!</span><span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">group</span><span class="p">)){</span>
+<span class="m">124</span>   <span class="n">group</span> <span class="o">&lt;-</span> <span class="nf">read.table</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">group</span><span class="p">,</span><span class="n">header</span><span class="o">=</span><span class="bp">T</span><span class="p">,</span><span class="n">row.names</span><span class="o">=</span><span class="m">1</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s">&#39;\t&#39;</span><span class="n">stringsAsFactors</span><span class="o">=</span><span class="bp">F</span><span class="p">)</span>
+<span class="m">125</span>   <span class="c1"># print(group)</span>
+<span class="m">126</span>   <span class="n">cols_anno</span> <span class="o">&lt;-</span> <span class="nf">HeatmapAnnotation</span><span class="p">(</span><span class="n">group</span> <span class="o">=</span> <span class="n">group[</span><span class="p">,</span><span class="m">1</span><span class="n">]</span><span class="p">,</span><span class="n">show_legend</span><span class="o">=</span><span class="bp">F</span><span class="p">)</span>
+<span class="m">127</span> <span class="p">}</span>
+<span class="m">128</span> 
+<span class="m">129</span> <span class="nf">pdf</span><span class="p">(</span><span class="nf">paste</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">outpre</span><span class="p">,</span><span class="s">&#39;pdf&#39;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s">&#39;.&#39;</span><span class="p">))</span>
+<span class="m">130</span> <span class="nf">if</span><span class="p">(</span><span class="nf">exists</span><span class="p">(</span><span class="s">&#34;cols_anno&#34;</span><span class="p">)){</span>
+<span class="m">131</span>   <span class="nf">if</span><span class="p">(</span><span class="nf">exists</span><span class="p">(</span><span class="s">&#34;row_anno&#34;</span><span class="p">)){</span>
+<span class="m">132</span>   <span class="nf">Heatmap</span><span class="p">(</span><span class="n">dat</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="n">color</span><span class="p">,</span> <span class="n">cluster_rows</span> <span class="o">=</span> <span class="n">cluster_rows</span><span class="p">,</span><span class="n">cluster_columns</span> <span class="o">=</span> <span class="n">cluster_columns</span><span class="p">,</span>
+<span class="m">133</span>   <span class="n">clustering_method_rows</span> <span class="o">=</span> <span class="n">Clustering[1]</span><span class="p">,</span><span class="n">clustering_method_columns</span> <span class="o">=</span> <span class="n">Clustering[2]</span><span class="p">,</span>
+<span class="m">134</span>   <span class="n">clustering_distance_rows</span> <span class="o">=</span> <span class="n">distance[1]</span><span class="p">,</span><span class="n">clustering_distance_columns</span> <span class="o">=</span> <span class="n">distance[2]</span><span class="p">,</span>
+<span class="m">135</span>   <span class="n">show_row_names</span> <span class="o">=</span> <span class="n">row_names</span><span class="p">,</span><span class="n">show_column_names</span> <span class="o">=</span> <span class="n">columns_names</span><span class="p">,</span><span class="n">top_annotation</span> <span class="o">=</span> <span class="n">cols_anno</span><span class="p">,</span>
+<span class="m">136</span>   <span class="n">left_annotation</span> <span class="o">=</span> <span class="n">row_anno</span><span class="p">,</span><span class="n">row_km</span> <span class="o">=</span> <span class="n">opt</span><span class="o">$</span><span class="n">annot</span><span class="p">,</span><span class="n">column_names_rot</span><span class="o">=</span> <span class="n">opt</span><span class="o">$</span><span class="n">rot</span><span class="p">)</span>
+<span class="m">137</span>   <span class="p">}</span><span class="n">else</span><span class="p">{</span>
+<span class="m">138</span>   <span class="nf">Heatmap</span><span class="p">(</span><span class="n">dat</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="n">color</span><span class="p">,</span> <span class="n">cluster_rows</span> <span class="o">=</span> <span class="n">cluster_rows</span><span class="p">,</span><span class="n">cluster_columns</span> <span class="o">=</span> <span class="n">cluster_columns</span><span class="p">,</span>
+<span class="m">139</span>   <span class="n">clustering_method_rows</span> <span class="o">=</span> <span class="n">Clustering[1]</span><span class="p">,</span><span class="n">clustering_method_columns</span> <span class="o">=</span> <span class="n">Clustering[2]</span><span class="p">,</span>
+<span class="m">140</span>   <span class="n">clustering_distance_rows</span> <span class="o">=</span> <span class="n">distance[1]</span><span class="p">,</span><span class="n">clustering_distance_columns</span> <span class="o">=</span> <span class="n">distance[2]</span><span class="p">,</span>
+<span class="m">141</span>   <span class="n">show_row_names</span> <span class="o">=</span> <span class="n">row_names</span><span class="p">,</span><span class="n">show_column_names</span> <span class="o">=</span> <span class="n">columns_names</span><span class="p">,</span><span class="n">top_annotation</span> <span class="o">=</span> <span class="n">cols_anno</span><span class="p">,</span>
+<span class="m">142</span>   <span class="n">column_names_rot</span> <span class="o">=</span> <span class="n">opt</span><span class="o">$</span><span class="n">rot</span><span class="p">)</span>
+<span class="m">143</span>   <span class="p">}</span>
+<span class="m">144</span> <span class="p">}</span><span class="n">else</span><span class="p">{</span>
+<span class="m">145</span>   <span class="nf">if</span><span class="p">(</span><span class="nf">exists</span><span class="p">(</span><span class="s">&#34;row_anno&#34;</span><span class="p">)){</span>
+<span class="m">146</span>   <span class="nf">Heatmap</span><span class="p">(</span><span class="n">dat</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="n">color</span><span class="p">,</span> <span class="n">cluster_rows</span> <span class="o">=</span> <span class="n">cluster_rows</span><span class="p">,</span><span class="n">cluster_columns</span> <span class="o">=</span> <span class="n">cluster_columns</span><span class="p">,</span>
+<span class="m">147</span>   <span class="n">clustering_method_rows</span> <span class="o">=</span> <span class="n">Clustering[1]</span><span class="p">,</span><span class="n">clustering_method_columns</span> <span class="o">=</span> <span class="n">Clustering[2]</span><span class="p">,</span>
+<span class="m">148</span>   <span class="n">clustering_distance_rows</span> <span class="o">=</span> <span class="n">distance[1]</span><span class="p">,</span><span class="n">clustering_distance_columns</span> <span class="o">=</span> <span class="n">distance[2]</span><span class="p">,</span>
+<span class="m">149</span>   <span class="n">show_row_names</span> <span class="o">=</span> <span class="n">row_names</span><span class="p">,</span><span class="n">show_column_names</span> <span class="o">=</span> <span class="n">columns_names</span><span class="p">,</span> 
+<span class="m">150</span>   <span class="n">left_annotation</span> <span class="o">=</span> <span class="n">row_anno</span><span class="p">,</span><span class="n">row_km</span> <span class="o">=</span> <span class="n">opt</span><span class="o">$</span><span class="n">annot</span><span class="p">,</span><span class="n">column_names_rot</span><span class="o">=</span> <span class="n">opt</span><span class="o">$</span><span class="n">rot</span><span class="p">)</span>
+<span class="m">151</span>   <span class="p">}</span><span class="n">else</span><span class="p">{</span>
+<span class="m">152</span>   <span class="nf">Heatmap</span><span class="p">(</span><span class="n">dat</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="n">color</span><span class="p">,</span> <span class="n">cluster_rows</span> <span class="o">=</span> <span class="n">cluster_rows</span><span class="p">,</span><span class="n">cluster_columns</span> <span class="o">=</span> <span class="n">cluster_columns</span><span class="p">,</span>
+<span class="m">153</span>   <span class="n">clustering_method_rows</span> <span class="o">=</span> <span class="n">Clustering[1]</span><span class="p">,</span><span class="n">clustering_method_columns</span> <span class="o">=</span> <span class="n">Clustering[2]</span><span class="p">,</span>
+<span class="m">154</span>   <span class="n">clustering_distance_rows</span> <span class="o">=</span> <span class="n">distance[1]</span><span class="p">,</span><span class="n">clustering_distance_columns</span> <span class="o">=</span> <span class="n">distance[2]</span><span class="p">,</span>
+<span class="m">155</span>   <span class="n">show_row_names</span> <span class="o">=</span> <span class="n">row_names</span><span class="p">,</span><span class="n">show_column_names</span> <span class="o">=</span> <span class="n">columns_namescolumn_names_rot</span> <span class="o">=</span> <span class="n">opt</span><span class="o">$</span><span class="n">rot</span><span class="p">)</span>
+<span class="m">156</span>   <span class="p">}</span>
+<span class="m">157</span> <span class="p">}</span>
+<span class="m">158</span> <span class="nf">dev.off</span><span class="p">()</span>
+<span class="m">159</span> <span class="nf">q</span><span class="p">()</span>
+</code></pre></div><h2 id="结果展示">结果展示</h2>
+<p><img
+        class="lazyload"
+        src="/MajorbioHuGo/svg/loading.min.svg"
+        data-src="result.png"
+        data-srcset="/MajorbioHuGo/posts/heatmap-dataviz/result.png, result.png 1.5x, /MajorbioHuGo/posts/heatmap-dataviz/result.png 2x"
+        data-sizes="auto"
+        alt="/MajorbioHuGo/posts/heatmap-dataviz/result.png"
+        title="result" /></p>
+<h1 id="注意">注意：</h1>
+<p>由于ComplexHeatmap版本问题，此脚本运行需在R3.6及以上版本运行，集群默认版本运行会报错。</p>
+<h1 id="参考文献">参考文献</h1>
+<p>Gu Z, Eils R, Schlesner M (2016). <a href="https://academic.oup.com/bioinformatics/article-abstract/32/18/2847/1743594" target="_blank" rel="noopener noreffer">Complex heatmaps reveal patterns and correlations in multidimensional genomic data</a>. Bioinformatics.</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2020-12-19</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/MajorbioHuGo/tags/heatmap/">heatmap</a>,&nbsp;<a href="/MajorbioHuGo/tags/%E7%83%AD%E5%9B%BE/">热图</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/MajorbioHuGo/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/MajorbioHuGo/posts/basic-markdown-syntax/" class="prev" rel="prev" title="Markdown 基本语法"><i class="fas fa-angle-left fa-fw"></i>Markdown 基本语法</a>
+            <a href="/MajorbioHuGo/posts/mapping-make-fake-data/" class="next" rel="next" title="根据比对率生产假的原始序列数据">根据比对率生产假的原始序列数据<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.79.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2020</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/MajorbioHuGo/" target="_blank"></a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="/MajorbioHuGo/lib/lightgallery/lightgallery.min.css"><script type="text/javascript" src="/MajorbioHuGo/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/MajorbioHuGo/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/MajorbioHuGo/lib/algoliasearch/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="/MajorbioHuGo/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/MajorbioHuGo/lib/lightgallery/lightgallery.min.js"></script><script type="text/javascript" src="/MajorbioHuGo/lib/lightgallery/lg-thumbnail.min.js"></script><script type="text/javascript" src="/MajorbioHuGo/lib/lightgallery/lg-zoom.min.js"></script><script type="text/javascript" src="/MajorbioHuGo/lib/clipboard/clipboard.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"algoliaAppID":"VX4BXOJBC5","algoliaIndex":"majorbio.zh-cn","algoliaSearchKey":"53790f167edb548b217bfe91dd891ac0","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"}};</script><script type="text/javascript" src="/MajorbioHuGo/js/theme.min.js"></script></body>
+</html>

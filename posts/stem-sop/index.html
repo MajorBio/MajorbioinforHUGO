@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>The Short Time-series Expression Miner - 美吉生物信息团队</title><meta name="Description" content="根据基因的表达量进行时间序列分析"><meta property="og:title" content="The Short Time-series Expression Miner" />
+<meta property="og:description" content="根据基因的表达量进行时间序列分析" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://czheluo.github.io/MajorbioHuGo/posts/stem-sop/" />
+<meta property="og:image" content="http://czheluo.github.io/MajorbioHuGo/posts/stem-sop/STEM.png"/>
+<meta property="article:published_time" content="2020-12-14T16:29:59+08:00" />
+<meta property="article:modified_time" content="2020-12-18T16:29:59+08:00" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="http://czheluo.github.io/MajorbioHuGo/posts/stem-sop/STEM.png"/>
+<meta name="twitter:title" content="The Short Time-series Expression Miner"/>
+<meta name="twitter:description" content="根据基因的表达量进行时间序列分析"/>
+<meta name="application-name" content="美吉生物信息团队">
+<meta name="apple-mobile-web-app-title" content="美吉生物信息团队"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://czheluo.github.io/MajorbioHuGo/posts/stem-sop/" /><link rel="prev" href="http://czheluo.github.io/MajorbioHuGo/posts/matrix-eqtl-twas/" /><link rel="next" href="http://czheluo.github.io/MajorbioHuGo/posts/pdf-to-png/" /><link rel="stylesheet" href="/MajorbioHuGo/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/MajorbioHuGo/css/style.min.css"><link rel="stylesheet" href="/MajorbioHuGo/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/MajorbioHuGo/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "The Short Time-series Expression Miner",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/czheluo.github.io\/MajorbioHuGo\/posts\/stem-sop\/"
+        },"image": [{
+                            "@type": "ImageObject",
+                            "url": "http:\/\/czheluo.github.io\/MajorbioHuGo\/posts\/stem-sop\/STEM.png",
+                            "width":  1296 ,
+                            "height":  630 
+                        }],"genre": "posts","keywords": "STEM, 时间序列, RNAseq, 表达量","wordcount":  591 ,
+        "url": "http:\/\/czheluo.github.io\/MajorbioHuGo\/posts\/stem-sop\/","datePublished": "2020-12-14T16:29:59+08:00","dateModified": "2020-12-18T16:29:59+08:00","publisher": {
+            "@type": "Organization",
+            "name": "Xiaolong He"},"author": {
+                "@type": "Person",
+                "name": "Xiaolong He"
+            },"description": "根据基因的表达量进行时间序列分析"
+    }
+    </script></head>
+    <body header-desktop="" header-mobile=""><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : '' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/MajorbioHuGo/" title="美吉生物信息团队">美吉生物信息团队</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/MajorbioHuGo/MajorbioHuGo/posts/"> 所有文章 </a><a class="menu-item" href="/MajorbioHuGo/MajorbioHuGo/tags/"> 标签 </a><a class="menu-item" href="/MajorbioHuGo/MajorbioHuGo/categories/"> 分类 </a><a class="menu-item" href="/MajorbioHuGo/MajorbioHuGo/categories/documentation/"> 文档 </a><a class="menu-item" href="/MajorbioHuGo/MajorbioHuGo/about/"> 关于 </a><a class="menu-item" href="/MajorbioHuGo" title="GitHub"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/MajorbioHuGo/" title="美吉生物信息团队">美吉生物信息团队</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/MajorbioHuGo/MajorbioHuGo/posts/" title="">所有文章</a><a class="menu-item" href="/MajorbioHuGo/MajorbioHuGo/tags/" title="">标签</a><a class="menu-item" href="/MajorbioHuGo/MajorbioHuGo/categories/" title="">分类</a><a class="menu-item" href="/MajorbioHuGo/MajorbioHuGo/categories/documentation/" title="">文档</a><a class="menu-item" href="/MajorbioHuGo/MajorbioHuGo/about/" title="">关于</a><a class="menu-item" href="/MajorbioHuGo" title="GitHub"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">The Short Time-series Expression Miner</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/xiaolong-he999" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw"></i>Xiaolong He</a></span>&nbsp;<span class="post-category">收录于 <a href="/MajorbioHuGo/categories/rnaseq/"><i class="far fa-folder fa-fw"></i>RNAseq</a>&nbsp;<a href="/MajorbioHuGo/categories/tools/"><i class="far fa-folder fa-fw"></i>tools</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-12-14">2020-12-14</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 591 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 2 分钟&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/MajorbioHuGo/svg/loading.min.svg"
+        data-src="/MajorbioHuGo/posts/stem-sop/STEM.png"
+        data-srcset="/MajorbioHuGo/posts/stem-sop/STEM.png, /MajorbioHuGo/posts/stem-sop/STEM.png 1.5x, /MajorbioHuGo/posts/stem-sop/STEM.png 2x"
+        data-sizes="auto"
+        alt="/MajorbioHuGo/posts/stem-sop/STEM.png"
+        title="根据基因的表达量进行时间序列分析" /></div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#一-数据准备">一. 数据准备</a></li>
+    <li><a href="#二-pipeline">二. Pipeline</a></li>
+    <li><a href="#三-代码">三. 代码</a></li>
+    <li><a href="#结果说明">结果说明</a></li>
+    <li><a href="#注意">注意</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="stem-a-tool-for-the-analysis-of-short-time-series-gene-expression-data">STEM: a tool for the analysis of short time series gene expression data</h1>
+<p><a href="http://www.sb.cs.cmu.edu/stem" target="_blank" rel="noopener noreffer">STEM官方帮助文档</a></p>
+<h2 id="一-数据准备">一. 数据准备</h2>
+<ol>
+<li>RNseq 表达矩阵文件:行为基因，列为样本</li>
+</ol>
+<p><img
+        class="lazyload"
+        src="/MajorbioHuGo/svg/loading.min.svg"
+        data-src="matrix.png"
+        data-srcset="/MajorbioHuGo/posts/stem-sop/matrix.png, matrix.png 1.5x, /MajorbioHuGo/posts/stem-sop/matrix.png 2x"
+        data-sizes="auto"
+        alt="/MajorbioHuGo/posts/stem-sop/matrix.png"
+        title="/MajorbioHuGo/posts/stem-sop/matrix.png" /></p>
+<h2 id="二-pipeline">二. Pipeline</h2>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="err">脚本位置：</span>
+<span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="n">ilustre</span><span class="o">/</span><span class="n">centos7users</span><span class="o">/</span><span class="n">daokuan</span><span class="o">.</span><span class="n">zhang</span><span class="o">/</span><span class="n">workspace</span><span class="o">/</span><span class="n">develop</span><span class="o">/</span><span class="n">STEM</span><span class="o">/</span><span class="n">STEM</span><span class="o">.</span><span class="n">py</span>
+
+<span class="err">用法示例：</span>
+<span class="n">python</span> <span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="n">ilustre</span><span class="o">/</span><span class="n">centos7users</span><span class="o">/</span><span class="n">daokuan</span><span class="o">.</span><span class="n">zhang</span><span class="o">/</span><span class="n">workspace</span><span class="o">/</span><span class="n">develop</span><span class="o">/</span><span class="n">STEM</span><span class="o">/</span><span class="n">STEM</span><span class="o">.</span><span class="n">py</span> <span class="n">matrix</span><span class="o">.</span><span class="n">txt</span>
+</code></pre></div><p><img
+        class="lazyload"
+        src="/MajorbioHuGo/svg/loading.min.svg"
+        data-src="usage.png"
+        data-srcset="/MajorbioHuGo/posts/stem-sop/usage.png, usage.png 1.5x, /MajorbioHuGo/posts/stem-sop/usage.png 2x"
+        data-sizes="auto"
+        alt="/MajorbioHuGo/posts/stem-sop/usage.png"
+        title="/MajorbioHuGo/posts/stem-sop/usage.png" /></p>
+<h2 id="三-代码">三. 代码</h2>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1">#Author daokuan.zhang</span>
+<span class="c1">#Usage: python STEM.py express_matrix.txt</span>
+
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span><span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="kn">as</span> <span class="nn">sns</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">from</span> <span class="nn">shutil</span> <span class="kn">import</span> <span class="n">copyfile</span>
+
+<span class="k">def</span> <span class="nf">custom_plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
+    <span class="n">profile</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;profile&#39;</span><span class="p">)</span>
+    <span class="n">colordict</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;colordict&#39;</span><span class="p">)</span>
+    <span class="n">pid</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Profile ID&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">row</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">pid</span><span class="p">]</span>
+    <span class="n">cluster</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;Cluster (-1 non-significant)&#39;</span><span class="p">]</span>
+    <span class="n">color</span> <span class="o">=</span> <span class="n">colordict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cluster</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">patch</span><span class="o">.</span><span class="n">set_fc</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+    <span class="n">pvalue</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;p-value&#39;</span><span class="p">]</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="s1">&#39;pvalue:</span><span class="si">%.2g</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">pvalue</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">),</span> <span class="n">xycoords</span><span class="o">=</span><span class="s1">&#39;axes fraction&#39;</span><span class="p">)</span>
+    <span class="n">genes</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;# </span><span class="si">%s</span><span class="s1">s Assigned&#39;</span> <span class="o">%</span> <span class="n">term</span><span class="p">]</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">s: </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">term</span><span class="p">,</span> <span class="n">genes</span><span class="p">),</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">),</span> <span class="n">xycoords</span><span class="o">=</span><span class="s1">&#39;axes fraction&#39;</span><span class="p">)</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">plothline</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">profileoutput</span><span class="p">():</span>
+    <span class="n">creat</span> <span class="o">=</span> <span class="s2">&#34;all&#34;</span>
+    <span class="n">sigprofile</span> <span class="o">=</span> <span class="n">profile</span><span class="p">[</span>
+        <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;p-value&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">0.05</span><span class="p">]</span> <span class="k">if</span> <span class="n">creat</span> <span class="o">==</span> <span class="s1">&#39;significant&#39;</span> <span class="k">else</span> <span class="n">profile</span>
+    <span class="n">sigprofile</span> <span class="o">=</span> <span class="n">sigprofile</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;p-value&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i2</span><span class="p">,</span> <span class="p">(</span><span class="n">profileid</span><span class="p">,</span> <span class="n">prow</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sigprofile</span><span class="o">.</span><span class="n">iterrows</span><span class="p">(),</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">name2</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">_Profile_</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i2</span><span class="p">,</span> <span class="n">profileid</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">gd</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">get_group</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">profileid</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">gd</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">get_group</span><span class="p">(</span><span class="n">profileid</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">gd</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">gd</span> <span class="o">=</span> <span class="n">gd</span><span class="o">.</span><span class="n">ix</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:]</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">gdt</span> <span class="o">=</span> <span class="n">gd</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">gdt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">colormap</span><span class="o">=</span><span class="s1">&#39;Set2&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">xticks</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gdt</span><span class="p">)))</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">prow</span><span class="p">[</span><span class="s1">&#39;Profile Model&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)]</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">gdt</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">model</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+        <span class="n">ylabel</span> <span class="o">=</span> <span class="s1">&#39;Expression Change(log2(v(i)/v(0))&#39;</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="n">ylabel</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Times&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Profile Model:(</span><span class="si">%s</span><span class="s1">)</span><span class="se">\n</span><span class="si">%d</span><span class="s1"> </span><span class="si">%s</span><span class="s1">s Assigned; </span><span class="si">%d</span><span class="s1"> </span><span class="si">%s</span><span class="s1">s Expected; p-value=</span><span class="si">%.2g</span><span class="s1">&#39;</span>
+                  <span class="o">%</span> <span class="p">(</span><span class="n">prow</span><span class="p">[</span><span class="s1">&#39;Profile Model&#39;</span><span class="p">],</span> <span class="n">prow</span><span class="p">[</span><span class="s1">&#39;# </span><span class="si">%s</span><span class="s1">s Assigned&#39;</span> <span class="o">%</span> <span class="n">term</span><span class="p">],</span> <span class="n">term</span><span class="p">,</span>
+                     <span class="n">prow</span><span class="p">[</span><span class="s1">&#39;# </span><span class="si">%s</span><span class="s1"> Expected&#39;</span> <span class="o">%</span> <span class="n">term</span><span class="p">],</span> <span class="n">term</span><span class="p">,</span> <span class="n">prow</span><span class="p">[</span><span class="s1">&#39;p-value&#39;</span><span class="p">]))</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;left&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_position</span><span class="p">((</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="n">gd</span><span class="o">.</span><span class="n">columns</span> <span class="o">+=</span> <span class="s2">&#34;.</span><span class="si">%s</span><span class="s2">&#34;</span> <span class="o">%</span> <span class="n">ylabel</span>
+        <span class="n">pdfname</span><span class="o">=</span> <span class="n">name2</span><span class="o">+</span><span class="s2">&#34;.pdf&#34;</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">pdfname</span><span class="p">)</span>
+        <span class="n">gd</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">name2</span> <span class="o">+</span> <span class="s1">&#39;.xls&#39;</span><span class="p">,</span> <span class="n">index_label</span><span class="o">=</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="n">stembin</span><span class="o">=</span><span class="s2">&#34;/mnt/ilustre/centos7users/daokuan.zhang/workspace/develop/softwareKits/STEM/stem.jar&#34;</span>
+<span class="n">conf</span><span class="o">=</span><span class="s2">&#34;/mnt/ilustre/centos7users/daokuan.zhang/workspace/develop/softwareKits/STEM/config.txt&#34;</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s2">&#34;stem_out&#34;</span><span class="p">):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s2">&#34;stem_out&#34;</span><span class="p">)</span>
+<span class="n">copyfile</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="s2">&#34;stem_matrix.xls&#34;</span><span class="p">)</span>
+<span class="n">copyfile</span><span class="p">(</span><span class="n">conf</span><span class="p">,</span><span class="s2">&#34;stem.txt&#34;</span><span class="p">)</span>
+<span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="s1">&#39;java -mx1024M -jar &#34;</span><span class="si">%s</span><span class="s1">&#34; -b stem.txt stem_out&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">stembin</span><span class="p">),</span><span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&#34;stem_out/stem_genetable.txt&#34;</span><span class="p">,</span><span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s2">&#34;</span><span class="se">\t</span><span class="s2">&#34;</span><span class="p">)</span>
+<span class="n">profile</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&#34;stem_out/stem_profiletable.txt&#34;</span><span class="p">,</span><span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s2">&#34;</span><span class="se">\t</span><span class="s2">&#34;</span><span class="p">)</span>
+<span class="n">matrix</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&#34;stem_matrix.xls&#34;</span><span class="p">,</span><span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">header</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s2">&#34;</span><span class="se">\t</span><span class="s2">&#34;</span><span class="p">)</span>
+<span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="s2">&#34;stem_out&#34;</span><span class="p">)</span>
+<span class="n">gene_map</span> <span class="o">=</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">():</span> <span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">matrix</span><span class="o">.</span><span class="n">index</span><span class="p">}</span>
+<span class="n">data</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="n">gene_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+<span class="n">group</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;Profile&#39;</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+<span class="n">profile</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;p-value&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;Profile Model&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">set_names</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">cluster</span> <span class="o">=</span> <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;Cluster (-1 non-significant)&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+<span class="n">ncolors</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s1">&#39;pastel&#39;</span><span class="p">,</span> <span class="n">n_colors</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">cluster</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">ncolors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;#BEBEBE&#39;</span><span class="p">)</span>
+<span class="n">colordict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">cluster</span><span class="p">,</span> <span class="n">ncolors</span><span class="p">))</span>
+<span class="n">model_stack</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;model&#39;</span><span class="p">)</span>
+<span class="n">term</span><span class="o">=</span><span class="s2">&#34;Gene&#34;</span>
+<span class="n">grid</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">FacetGrid</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">model_stack</span><span class="p">,</span> <span class="n">col_wrap</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s1">&#39;Profile ID&#39;</span><span class="p">,</span><span class="n">col_order</span><span class="o">=</span><span class="n">profile</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+<span class="n">grid</span><span class="o">.</span><span class="n">map_dataframe</span><span class="p">(</span><span class="n">custom_plot</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="n">profile</span><span class="p">,</span> <span class="n">colordict</span><span class="o">=</span><span class="n">colordict</span><span class="p">)</span>
+<span class="n">grid</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">plothline</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">)</span>
+<span class="n">grid</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;SummaryPlot.pdf&#39;</span><span class="p">)</span>
+<span class="n">profileoutput</span><span class="p">()</span>
+</code></pre></div><h2 id="结果说明">结果说明</h2>
+<p><img
+        class="lazyload"
+        src="/MajorbioHuGo/svg/loading.min.svg"
+        data-src="result.png"
+        data-srcset="/MajorbioHuGo/posts/stem-sop/result.png, result.png 1.5x, /MajorbioHuGo/posts/stem-sop/result.png 2x"
+        data-sizes="auto"
+        alt="/MajorbioHuGo/posts/stem-sop/result.png"
+        title="/MajorbioHuGo/posts/stem-sop/result.png" /></p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">-</span> <span class="n">stem_profiletable</span><span class="o">.</span><span class="n">txt</span><span class="err">：各</span><span class="n">profile</span> <span class="err">在不同时间点变化趋势值文件</span>
+<span class="o">-</span> <span class="n">stem_genetable</span><span class="o">.</span><span class="n">txt</span><span class="err">：各基因所属的</span><span class="n">profile以及cluster编号信息文件</span>
+<span class="o">-</span> <span class="n">SummaryPlot</span><span class="o">.</span><span class="n">pdf</span><span class="p">:</span> <span class="err">所有</span><span class="n">profile的趋势图</span>
+<span class="o">-</span> <span class="n">Profile_detail</span><span class="err">：</span> <span class="err">每个</span><span class="n">profile的基因变化趋势结果文件夹</span>
+</code></pre></div><h2 id="注意">注意</h2>
+<p>如有生物学重复，使用均值进行时序分析</p>
+<h1 id="参考文献">参考文献</h1>
+<p>Ernst, J., Bar-Joseph, Z. <a href="https://doi.org/10.1186/1471-2105-7-191" target="_blank" rel="noopener noreffer">STEM: a tool for the analysis of short time series gene expression data</a>. BMC Bioinformatics 7, 191 (2006).</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2020-12-18</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/MajorbioHuGo/tags/stem/">STEM</a>,&nbsp;<a href="/MajorbioHuGo/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/">时间序列</a>,&nbsp;<a href="/MajorbioHuGo/tags/rnaseq/">RNAseq</a>,&nbsp;<a href="/MajorbioHuGo/tags/%E8%A1%A8%E8%BE%BE%E9%87%8F/">表达量</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/MajorbioHuGo/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/MajorbioHuGo/posts/matrix-eqtl-twas/" class="prev" rel="prev" title="TWAS/eQTL analysis pipeline"><i class="fas fa-angle-left fa-fw"></i>TWAS/eQTL analysis pipeline</a>
+            <a href="/MajorbioHuGo/posts/pdf-to-png/" class="next" rel="next" title="Linux环境下，将PDF图片格式转成png图片格式">Linux环境下，将PDF图片格式转成png图片格式<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.79.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2020</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/MajorbioHuGo/" target="_blank"></a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="/MajorbioHuGo/lib/lightgallery/lightgallery.min.css"><script type="text/javascript" src="/MajorbioHuGo/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/MajorbioHuGo/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/MajorbioHuGo/lib/algoliasearch/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="/MajorbioHuGo/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/MajorbioHuGo/lib/lightgallery/lightgallery.min.js"></script><script type="text/javascript" src="/MajorbioHuGo/lib/lightgallery/lg-thumbnail.min.js"></script><script type="text/javascript" src="/MajorbioHuGo/lib/lightgallery/lg-zoom.min.js"></script><script type="text/javascript" src="/MajorbioHuGo/lib/clipboard/clipboard.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"algoliaAppID":"VX4BXOJBC5","algoliaIndex":"majorbio.zh-cn","algoliaSearchKey":"53790f167edb548b217bfe91dd891ac0","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"}};</script><script type="text/javascript" src="/MajorbioHuGo/js/theme.min.js"></script></body>
+</html>
